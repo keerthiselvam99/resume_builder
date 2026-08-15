@@ -1,0 +1,111 @@
+{
+  "overallScore": 39,
+  "required": [
+    "accessible",
+    "applications",
+    "aws",
+    "build",
+    "ci/cd",
+    "code",
+    "collaborate",
+    "customer",
+    "cypress",
+    "decisions",
+    "deliver",
+    "document",
+    "engineers",
+    "improve",
+    "measurable",
+    "mentor",
+    "outcomes",
+    "performance",
+    "product",
+    "reliable",
+    "review",
+    "teams",
+    "technical",
+    "testing"
+  ],
+  "unspecified": [
+    "angular",
+    "javascript",
+    "node.js",
+    "rest api",
+    "typescript"
+  ],
+  "preferred": [
+    "docker"
+  ],
+  "matched": [
+    "angular",
+    "applications",
+    "aws",
+    "ci/cd",
+    "customer",
+    "docker",
+    "engineers",
+    "improve",
+    "javascript",
+    "node.js",
+    "performance",
+    "rest api",
+    "testing",
+    "typescript"
+  ],
+  "missing": [
+    "accessible",
+    "build",
+    "code",
+    "collaborate",
+    "cypress",
+    "decisions",
+    "deliver",
+    "document",
+    "measurable",
+    "mentor",
+    "outcomes",
+    "product",
+    "reliable",
+    "review",
+    "teams",
+    "technical"
+  ],
+  "categories": [
+    {
+      "name": "Skills",
+      "score": 42,
+      "weight": 35,
+      "contribution": 14.7
+    },
+    {
+      "name": "Experience",
+      "score": 27,
+      "weight": 25,
+      "contribution": 6.75
+    },
+    {
+      "name": "Title",
+      "score": 67,
+      "weight": 15,
+      "contribution": 10.05
+    },
+    {
+      "name": "Projects",
+      "score": 20,
+      "weight": 10,
+      "contribution": 2
+    },
+    {
+      "name": "Education",
+      "score": 0,
+      "weight": 10,
+      "contribution": 0
+    },
+    {
+      "name": "Quality",
+      "score": 100,
+      "weight": 5,
+      "contribution": 5
+    }
+  ]
+}

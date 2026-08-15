@@ -1,0 +1,298 @@
+{
+  "required": [
+    {
+      "keyword": "aws",
+      "priority": "required",
+      "evidence": [
+        {
+          "section": "skills",
+          "excerpt": "Angular, TypeScript, Node.js, Python, AWS, React, PostgreSQL, Docker, Kubernetes, JavaScript, REST APIs, Testing, CI/CD"
+        },
+        {
+          "section": "projects",
+          "excerpt": "Enterprise Dashboard | Lead Frontend Engineer | A real-time analytics dashboard for enterprise clients with role-based access control and customizable widgets. | Angular, NgRx, D3.js, Socket.IO, AWS | Designed and implem"
+        },
+        {
+          "section": "projects",
+          "excerpt": "API Gateway Platform | Full Stack Developer | A microservices-based API gateway with rate limiting, authentication, and monitoring capabilities. | Node.js, Express, PostgreSQL, Redis, Docker, Kubernetes | Implemented JWT"
+        },
+        {
+          "section": "certifications",
+          "excerpt": "AWS Solutions Architect – Associate | Amazon Web Services"
+        }
+      ]
+    },
+    {
+      "keyword": "ci/cd",
+      "priority": "required",
+      "evidence": [
+        {
+          "section": "skills",
+          "excerpt": "Angular, TypeScript, Node.js, Python, AWS, React, PostgreSQL, Docker, Kubernetes, JavaScript, REST APIs, Testing, CI/CD"
+        },
+        {
+          "section": "experience",
+          "excerpt": "Software Engineer | TechStart Inc | Developed REST APIs using Node.js and Express, handling 10k+ requests daily. | Implemented CI/CD pipelines with GitHub Actions, cutting deployment time by 50%."
+        }
+      ]
+    },
+    {
+      "keyword": "testing",
+      "priority": "required",
+      "evidence": [
+        {
+          "section": "skills",
+          "excerpt": "Angular, TypeScript, Node.js, Python, AWS, React, PostgreSQL, Docker, Kubernetes, JavaScript, REST APIs, Testing, CI/CD"
+        }
+      ]
+    },
+    {
+      "keyword": "cypress",
+      "priority": "required",
+      "evidence": []
+    }
+  ],
+  "preferred": [
+    {
+      "keyword": "docker",
+      "priority": "preferred",
+      "evidence": [
+        {
+          "section": "skills",
+          "excerpt": "Angular, TypeScript, Node.js, Python, AWS, React, PostgreSQL, Docker, Kubernetes, JavaScript, REST APIs, Testing, CI/CD"
+        },
+        {
+          "section": "projects",
+          "excerpt": "API Gateway Platform | Full Stack Developer | A microservices-based API gateway with rate limiting, authentication, and monitoring capabilities. | Node.js, Express, PostgreSQL, Redis, Docker, Kubernetes | Implemented JWT"
+        }
+      ]
+    }
+  ],
+  "unspecified": [
+    {
+      "keyword": "angular",
+      "priority": "unspecified",
+      "evidence": [
+        {
+          "section": "skills",
+          "excerpt": "Angular, TypeScript, Node.js, Python, AWS, React, PostgreSQL, Docker, Kubernetes, JavaScript, REST APIs, Testing, CI/CD"
+        },
+        {
+          "section": "projects",
+          "excerpt": "Enterprise Dashboard | Lead Frontend Engineer | A real-time analytics dashboard for enterprise clients with role-based access control and customizable widgets. | Angular, NgRx, D3.js, Socket.IO, AWS | Designed and implem"
+        }
+      ]
+    },
+    {
+      "keyword": "javascript",
+      "priority": "unspecified",
+      "evidence": [
+        {
+          "section": "skills",
+          "excerpt": "Angular, TypeScript, Node.js, Python, AWS, React, PostgreSQL, Docker, Kubernetes, JavaScript, REST APIs, Testing, CI/CD"
+        },
+        {
+          "section": "experience",
+          "excerpt": "Software Engineer | TechStart Inc | Developed REST APIs using Node.js and Express, handling 10k+ requests daily. | Implemented CI/CD pipelines with GitHub Actions, cutting deployment time by 50%."
+        },
+        {
+          "section": "projects",
+          "excerpt": "Enterprise Dashboard | Lead Frontend Engineer | A real-time analytics dashboard for enterprise clients with role-based access control and customizable widgets. | Angular, NgRx, D3.js, Socket.IO, AWS | Designed and implem"
+        },
+        {
+          "section": "projects",
+          "excerpt": "API Gateway Platform | Full Stack Developer | A microservices-based API gateway with rate limiting, authentication, and monitoring capabilities. | Node.js, Express, PostgreSQL, Redis, Docker, Kubernetes | Implemented JWT"
+        }
+      ]
+    },
+    {
+      "keyword": "node.js",
+      "priority": "unspecified",
+      "evidence": [
+        {
+          "section": "skills",
+          "excerpt": "Angular, TypeScript, Node.js, Python, AWS, React, PostgreSQL, Docker, Kubernetes, JavaScript, REST APIs, Testing, CI/CD"
+        },
+        {
+          "section": "experience",
+          "excerpt": "Software Engineer | TechStart Inc | Developed REST APIs using Node.js and Express, handling 10k+ requests daily. | Implemented CI/CD pipelines with GitHub Actions, cutting deployment time by 50%."
+        },
+        {
+          "section": "projects",
+          "excerpt": "API Gateway Platform | Full Stack Developer | A microservices-based API gateway with rate limiting, authentication, and monitoring capabilities. | Node.js, Express, PostgreSQL, Redis, Docker, Kubernetes | Implemented JWT"
+        }
+      ]
+    },
+    {
+      "keyword": "rest api",
+      "priority": "unspecified",
+      "evidence": [
+        {
+          "section": "skills",
+          "excerpt": "Angular, TypeScript, Node.js, Python, AWS, React, PostgreSQL, Docker, Kubernetes, JavaScript, REST APIs, Testing, CI/CD"
+        },
+        {
+          "section": "experience",
+          "excerpt": "Software Engineer | TechStart Inc | Developed REST APIs using Node.js and Express, handling 10k+ requests daily. | Implemented CI/CD pipelines with GitHub Actions, cutting deployment time by 50%."
+        }
+      ]
+    },
+    {
+      "keyword": "typescript",
+      "priority": "unspecified",
+      "evidence": [
+        {
+          "section": "skills",
+          "excerpt": "Angular, TypeScript, Node.js, Python, AWS, React, PostgreSQL, Docker, Kubernetes, JavaScript, REST APIs, Testing, CI/CD"
+        }
+      ]
+    }
+  ],
+  "matched": [
+    {
+      "keyword": "angular",
+      "priority": "unspecified",
+      "evidence": [
+        {
+          "section": "skills",
+          "excerpt": "Angular, TypeScript, Node.js, Python, AWS, React, PostgreSQL, Docker, Kubernetes, JavaScript, REST APIs, Testing, CI/CD"
+        },
+        {
+          "section": "projects",
+          "excerpt": "Enterprise Dashboard | Lead Frontend Engineer | A real-time analytics dashboard for enterprise clients with role-based access control and customizable widgets. | Angular, NgRx, D3.js, Socket.IO, AWS | Designed and implem"
+        }
+      ]
+    },
+    {
+      "keyword": "aws",
+      "priority": "required",
+      "evidence": [
+        {
+          "section": "skills",
+          "excerpt": "Angular, TypeScript, Node.js, Python, AWS, React, PostgreSQL, Docker, Kubernetes, JavaScript, REST APIs, Testing, CI/CD"
+        },
+        {
+          "section": "projects",
+          "excerpt": "Enterprise Dashboard | Lead Frontend Engineer | A real-time analytics dashboard for enterprise clients with role-based access control and customizable widgets. | Angular, NgRx, D3.js, Socket.IO, AWS | Designed and implem"
+        },
+        {
+          "section": "projects",
+          "excerpt": "API Gateway Platform | Full Stack Developer | A microservices-based API gateway with rate limiting, authentication, and monitoring capabilities. | Node.js, Express, PostgreSQL, Redis, Docker, Kubernetes | Implemented JWT"
+        },
+        {
+          "section": "certifications",
+          "excerpt": "AWS Solutions Architect – Associate | Amazon Web Services"
+        }
+      ]
+    },
+    {
+      "keyword": "ci/cd",
+      "priority": "required",
+      "evidence": [
+        {
+          "section": "skills",
+          "excerpt": "Angular, TypeScript, Node.js, Python, AWS, React, PostgreSQL, Docker, Kubernetes, JavaScript, REST APIs, Testing, CI/CD"
+        },
+        {
+          "section": "experience",
+          "excerpt": "Software Engineer | TechStart Inc | Developed REST APIs using Node.js and Express, handling 10k+ requests daily. | Implemented CI/CD pipelines with GitHub Actions, cutting deployment time by 50%."
+        }
+      ]
+    },
+    {
+      "keyword": "docker",
+      "priority": "preferred",
+      "evidence": [
+        {
+          "section": "skills",
+          "excerpt": "Angular, TypeScript, Node.js, Python, AWS, React, PostgreSQL, Docker, Kubernetes, JavaScript, REST APIs, Testing, CI/CD"
+        },
+        {
+          "section": "projects",
+          "excerpt": "API Gateway Platform | Full Stack Developer | A microservices-based API gateway with rate limiting, authentication, and monitoring capabilities. | Node.js, Express, PostgreSQL, Redis, Docker, Kubernetes | Implemented JWT"
+        }
+      ]
+    },
+    {
+      "keyword": "javascript",
+      "priority": "unspecified",
+      "evidence": [
+        {
+          "section": "skills",
+          "excerpt": "Angular, TypeScript, Node.js, Python, AWS, React, PostgreSQL, Docker, Kubernetes, JavaScript, REST APIs, Testing, CI/CD"
+        },
+        {
+          "section": "experience",
+          "excerpt": "Software Engineer | TechStart Inc | Developed REST APIs using Node.js and Express, handling 10k+ requests daily. | Implemented CI/CD pipelines with GitHub Actions, cutting deployment time by 50%."
+        },
+        {
+          "section": "projects",
+          "excerpt": "Enterprise Dashboard | Lead Frontend Engineer | A real-time analytics dashboard for enterprise clients with role-based access control and customizable widgets. | Angular, NgRx, D3.js, Socket.IO, AWS | Designed and implem"
+        },
+        {
+          "section": "projects",
+          "excerpt": "API Gateway Platform | Full Stack Developer | A microservices-based API gateway with rate limiting, authentication, and monitoring capabilities. | Node.js, Express, PostgreSQL, Redis, Docker, Kubernetes | Implemented JWT"
+        }
+      ]
+    },
+    {
+      "keyword": "node.js",
+      "priority": "unspecified",
+      "evidence": [
+        {
+          "section": "skills",
+          "excerpt": "Angular, TypeScript, Node.js, Python, AWS, React, PostgreSQL, Docker, Kubernetes, JavaScript, REST APIs, Testing, CI/CD"
+        },
+        {
+          "section": "experience",
+          "excerpt": "Software Engineer | TechStart Inc | Developed REST APIs using Node.js and Express, handling 10k+ requests daily. | Implemented CI/CD pipelines with GitHub Actions, cutting deployment time by 50%."
+        },
+        {
+          "section": "projects",
+          "excerpt": "API Gateway Platform | Full Stack Developer | A microservices-based API gateway with rate limiting, authentication, and monitoring capabilities. | Node.js, Express, PostgreSQL, Redis, Docker, Kubernetes | Implemented JWT"
+        }
+      ]
+    },
+    {
+      "keyword": "rest api",
+      "priority": "unspecified",
+      "evidence": [
+        {
+          "section": "skills",
+          "excerpt": "Angular, TypeScript, Node.js, Python, AWS, React, PostgreSQL, Docker, Kubernetes, JavaScript, REST APIs, Testing, CI/CD"
+        },
+        {
+          "section": "experience",
+          "excerpt": "Software Engineer | TechStart Inc | Developed REST APIs using Node.js and Express, handling 10k+ requests daily. | Implemented CI/CD pipelines with GitHub Actions, cutting deployment time by 50%."
+        }
+      ]
+    },
+    {
+      "keyword": "testing",
+      "priority": "required",
+      "evidence": [
+        {
+          "section": "skills",
+          "excerpt": "Angular, TypeScript, Node.js, Python, AWS, React, PostgreSQL, Docker, Kubernetes, JavaScript, REST APIs, Testing, CI/CD"
+        }
+      ]
+    },
+    {
+      "keyword": "typescript",
+      "priority": "unspecified",
+      "evidence": [
+        {
+          "section": "skills",
+          "excerpt": "Angular, TypeScript, Node.js, Python, AWS, React, PostgreSQL, Docker, Kubernetes, JavaScript, REST APIs, Testing, CI/CD"
+        }
+      ]
+    }
+  ],
+  "missing": [
+    {
+      "keyword": "cypress",
+      "priority": "required",
+      "evidence": []
+    }
+  ]
+}

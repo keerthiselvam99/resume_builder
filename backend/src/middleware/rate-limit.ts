@@ -23,3 +23,5 @@ function makeLimiter(max: number): ReturnType<typeof rateLimit> {
 export const loginLimiter = makeLimiter(config.auth.rateLimit.loginMax);
 export const registerLimiter = makeLimiter(config.auth.rateLimit.registerMax);
 export const refreshLimiter = makeLimiter(config.auth.rateLimit.refreshMax);
+/** Job descriptions are relatively expensive to normalize; limit per client without affecting auth. */
+export const jobMatchLimiter = makeLimiter(30);

@@ -1,0 +1,46 @@
+{
+  "viewport": {
+    "width": 1920,
+    "height": 1080
+  },
+  "body": {
+    "clientWidth": 1920,
+    "scrollWidth": 1920
+  },
+  "document": {
+    "clientWidth": 1920,
+    "scrollWidth": 1920
+  },
+  "editorLayout": null,
+  "previewColumn": null,
+  "frame": {
+    "x": 393,
+    "y": 205.28125,
+    "width": 538,
+    "height": 760
+  },
+  "stage": {
+    "clientWidth": 536,
+    "scrollWidth": 536,
+    "overflow": 0
+  },
+  "canvas": {
+    "x": 394.03125,
+    "y": 206.28125,
+    "width": 535.921875,
+    "height": 758,
+    "overflow": "visible"
+  },
+  "iframe": {
+    "x": 394.03125,
+    "y": 206.28125,
+    "width": 535.9323120117188,
+    "height": 758,
+    "transform": "matrix(0.674978, 0, 0, 0.674978, 0, 0)"
+  },
+  "iframeDocument": {
+    "clientWidth": 794,
+    "scrollWidth": 794
+  },
+  "scrollbarWidth": 0
+}

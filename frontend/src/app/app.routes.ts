@@ -55,10 +55,12 @@ export const routes: Routes = [
         title: 'Resume Editor',
       },
       {
-        path: 'job-descriptions',
-        component: ComingSoonComponent,
+        path: 'job-matcher',
+        loadComponent: () =>
+          import('./features/job-matcher/job-matcher.component').then((m) => m.JobMatcherComponent),
         title: 'Job Matcher',
       },
+      { path: 'job-descriptions', redirectTo: 'job-matcher', pathMatch: 'full' },
       {
         path: 'admin',
         canActivate: [adminGuard],

@@ -1,4 +1,7 @@
 import { expect, test, Page } from '@playwright/test';
+import { mkdir, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import { waitForPreviewReady } from './support/preview-ready';
 
 const DEMO_EMAIL = 'arun@example.com';
 const DEMO_PASSWORD = 'Password123!';
@@ -8,6 +11,7 @@ const WHITE = 'rgb(255, 255, 255)';
 const ACCENT = 'rgb(14, 165, 233)';
 
 const A4_PAGE_H_PX = 1123;
+const STABILIZATION = join(process.cwd(), 'job-matcher-acceptance', 'stabilization');
 
 interface PaginationReport {
   overflowingPages: number;
@@ -116,8 +120,8 @@ async function a4FrameMetrics(page: Page): Promise<{
         : null,
       pages,
       report: win
-        ? (win as unknown as { __paginationReport: PaginationReport | null }).__paginationReport ??
-          null
+        ? ((win as unknown as { __paginationReport: PaginationReport | null }).__paginationReport ??
+          null)
         : null,
     };
   });
@@ -215,22 +219,97 @@ test.describe('Navigation bar', () => {
 test.describe('Create Resume A4 preview', () => {
   test('in Fit mode the preview shows one complete A4 page at a time, paginated without clipping or horizontal overflow', async ({
     page,
-  }) => {
+  }, testInfo) => {
     await page.setViewportSize({ width: 1920, height: 1080 });
     await doLogin(page);
     await page.goto('/resumes/new?templateId=t-executive-banner-burgundy');
     await waitForIframeResume(page, 'iframe.preview-frame__iframe');
 
-    // The frame re-measures the A4 page height on iframe load; wait for the
-    // fit to settle so the assertions target the final rendered state.
-    await page.waitForFunction(() => {
-      const stage = document.querySelector('.preview-frame');
-      const canvas = stage?.querySelector('.preview-frame__canvas');
-      if (!stage || !canvas) return false;
-      const sr = stage.getBoundingClientRect();
-      const cr = canvas.getBoundingClientRect();
-      return cr.width <= sr.width + 1 && cr.height <= sr.height + 1;
+    await mkdir(STABILIZATION, { recursive: true });
+    const beforeDetailed = await page.locator('.preview-frame').evaluate((stage) => {
+      const frame = stage.querySelector('iframe') as HTMLIFrameElement;
+      const canvas = stage.querySelector('.preview-frame__canvas') as HTMLElement;
+      const documentElement = frame.contentDocument!.documentElement;
+      const box = (element: Element | null) => {
+        if (!element) return null;
+        const value = element.getBoundingClientRect();
+        return { x: value.x, y: value.y, width: value.width, height: value.height };
+      };
+      return {
+        viewport: { width: innerWidth, height: innerHeight },
+        body: { clientWidth: document.body.clientWidth, scrollWidth: document.body.scrollWidth },
+        document: {
+          clientWidth: document.documentElement.clientWidth,
+          scrollWidth: document.documentElement.scrollWidth,
+        },
+        editorLayout: box(document.querySelector('.create-layout')),
+        previewColumn: box(document.querySelector('.create-layout__preview')),
+        frame: box(stage),
+        stage: {
+          clientWidth: stage.clientWidth,
+          scrollWidth: stage.scrollWidth,
+          overflow: stage.scrollWidth - stage.clientWidth,
+        },
+        canvas: { ...box(canvas), overflow: getComputedStyle(canvas).overflow },
+        iframe: { ...box(frame), transform: getComputedStyle(frame).transform },
+        iframeDocument: {
+          clientWidth: documentElement.clientWidth,
+          scrollWidth: documentElement.scrollWidth,
+        },
+        scrollbarWidth: innerWidth - document.documentElement.clientWidth,
+      };
     });
+    await writeFile(
+      join(STABILIZATION, 'a4-before-measurements.json'),
+      JSON.stringify(beforeDetailed, null, 2),
+    );
+    await page.screenshot({ path: join(STABILIZATION, 'a4-overflow-before.png'), fullPage: true });
+    await waitForPreviewReady(page);
+    const detailed = await page.locator('.preview-frame').evaluate((stage) => {
+      const rect = (selector: string) => {
+        const element = document.querySelector(selector);
+        if (!element) return null;
+        const value = element.getBoundingClientRect();
+        return { x: value.x, y: value.y, width: value.width, height: value.height };
+      };
+      const frame = stage.querySelector('iframe') as HTMLIFrameElement;
+      const canvas = stage.querySelector('.preview-frame__canvas') as HTMLElement;
+      const documentElement = frame.contentDocument!.documentElement;
+      return {
+        viewport: { width: innerWidth, height: innerHeight },
+        body: { clientWidth: document.body.clientWidth, scrollWidth: document.body.scrollWidth },
+        document: {
+          clientWidth: document.documentElement.clientWidth,
+          scrollWidth: document.documentElement.scrollWidth,
+        },
+        editorLayout: rect('.create-layout'),
+        previewColumn: rect('.create-layout__preview'),
+        frame: rect('.preview-frame'),
+        stage: {
+          clientWidth: stage.clientWidth,
+          scrollWidth: stage.scrollWidth,
+          overflow: stage.scrollWidth - stage.clientWidth,
+        },
+        canvas: {
+          ...rect('.preview-frame__canvas'),
+          overflow: getComputedStyle(canvas).overflow,
+        },
+        iframe: {
+          ...rect('iframe.preview-frame__iframe'),
+          transform: getComputedStyle(frame).transform,
+        },
+        iframeDocument: {
+          clientWidth: documentElement.clientWidth,
+          scrollWidth: documentElement.scrollWidth,
+        },
+        scrollbarWidth: window.innerWidth - document.documentElement.clientWidth,
+      };
+    });
+    await writeFile(
+      join(STABILIZATION, 'a4-after-measurements.json'),
+      JSON.stringify(detailed, null, 2),
+    );
+    await page.screenshot({ path: join(STABILIZATION, 'a4-fit-after.png'), fullPage: true });
 
     const m = await a4FrameMetrics(page);
     expect(m.iframe).not.toBeNull();
@@ -273,8 +352,7 @@ test.describe('Create Resume A4 preview', () => {
       expect(gap).toBeGreaterThan(0);
       expect(gap).toBeLessThan(30); // 6mm page gutters, not reflowed overflow
     }
-    const lastPageBottom =
-      m.pages![m.pages!.length - 1].top + m.pages![m.pages!.length - 1].height;
+    const lastPageBottom = m.pages![m.pages!.length - 1].top + m.pages![m.pages!.length - 1].height;
     expect(m.doc!.sh).toBeGreaterThanOrEqual(lastPageBottom - 1);
     expect(m.doc!.sh - m.doc!.ch).toBeGreaterThanOrEqual(A4_PAGE_H_PX - 2);
     expect(m.doc!.sh - m.doc!.ch).toBeLessThanOrEqual(lastPageBottom - m.doc!.ch + 2);
@@ -282,6 +360,21 @@ test.describe('Create Resume A4 preview', () => {
     // No horizontal stage scrollbar and no horizontal overflow in the resume.
     expect(m.stageOverflow).toBeLessThanOrEqual(1);
     expect(m.doc!.sw - m.doc!.cw).toBeLessThanOrEqual(1);
+    await writeFile(
+      join(STABILIZATION, `a4-run-${testInfo.repeatEachIndex + 1}.json`),
+      JSON.stringify(
+        {
+          run: testInfo.repeatEachIndex + 1,
+          retries: testInfo.retry,
+          beforeOverflow: beforeDetailed.stage.overflow,
+          afterOverflow: detailed.stage.overflow,
+          iframeDocumentOverflow: m.doc!.sw - m.doc!.cw,
+          pageCount: m.report!.pageCount,
+        },
+        null,
+        2,
+      ),
+    );
   });
 
   test('Template Preview and Create Resume use the same shared A4 frame', async ({ page }) => {
@@ -321,7 +414,7 @@ test.describe('Create Resume A4 preview', () => {
     await page.setViewportSize({ width: 600, height: 900 });
     await doLogin(page);
     await page.goto('/resumes/new?templateId=t-executive-banner-burgundy');
-    await waitForIframeResume(page, 'iframe.preview-frame__iframe');
+    await waitForPreviewReady(page);
 
     const previewBox = await page.locator('.template-card').boundingBox();
     const formBox = await page.locator('.card:has(#resume-name)').boundingBox();
@@ -340,7 +433,7 @@ test.describe('Template preview stage', () => {
     await doLogin(page);
     await page.goto('/templates/t-executive-banner-burgundy');
     await page.getByRole('button', { name: 'Burgundy', exact: true }).click();
-    await waitForIframeResume(page, 'iframe.preview-frame__iframe');
+    await waitForPreviewReady(page);
 
     const metrics = await page.locator('.preview-frame').evaluate((stage) => {
       const canvas = stage.querySelector('.preview-frame__canvas') as HTMLElement | null;

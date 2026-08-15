@@ -19,6 +19,9 @@ import { HttpAuthRepository } from './http/http-auth.repository';
 import { HttpResumeRepository } from './http/http-resume.repository';
 import { HttpAnalysisRepository } from './http/http-analysis.repository';
 import { HttpPdfExportRepository } from './http/http-pdf-export.repository';
+import { JobMatchRepository } from './job-match.repository';
+import { HttpJobMatchRepository } from './http/http-job-match.repository';
+import { MockJobMatchRepository } from './mock/mock-job-match.repository';
 
 export const AUTH_REPOSITORY = new InjectionToken<AuthRepository>('AuthRepository');
 export const RESUME_REPOSITORY = new InjectionToken<ResumeRepository>('ResumeRepository');
@@ -28,6 +31,7 @@ export const SUGGESTION_REPOSITORY = new InjectionToken<SuggestionRepository>(
   'SuggestionRepository',
 );
 export const PDF_EXPORT_REPOSITORY = new InjectionToken<PdfExportRepository>('PdfExportRepository');
+export const JOB_MATCH_REPOSITORY = new InjectionToken<JobMatchRepository>('JobMatchRepository');
 
 /**
  * True when the app runs against localStorage-backed repositories (the default
@@ -130,6 +134,14 @@ export const repositoryProviders: Provider[] = [
   {
     provide: DEMO_MODE,
     useValue: environment.useMockApi,
+  },
+  {
+    provide: JOB_MATCH_REPOSITORY,
+    deps: [HTTP_API_CLIENT, RESUME_REPOSITORY],
+    useFactory: (client: HttpApiClient, resumes: ResumeRepository) =>
+      environment.useMockApi
+        ? new MockJobMatchRepository(resumes)
+        : new HttpJobMatchRepository(client),
   },
   {
     provide: PDF_EXPORT_REPOSITORY,

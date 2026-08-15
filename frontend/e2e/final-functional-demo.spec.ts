@@ -3,6 +3,7 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
 const EVIDENCE = join(process.cwd(), 'final-functional-review');
+const STABILIZATION = join(process.cwd(), 'job-matcher-acceptance', 'stabilization');
 const DEMO_MESSAGE =
   'PDF download requires the local backend. Start the full application to export your resume.';
 
@@ -38,15 +39,17 @@ async function addAllSections(page: Page): Promise<void> {
   let card = await draft(section, 'Add experience');
   await card.getByLabel('Company').fill('Gate Labs');
   await card.getByLabel('Role').fill('Release Engineer');
+  await card.getByLabel('Start date').fill('2021-01');
+  await card.getByLabel('End date').fill('2024-12');
   await card.getByRole('button', { name: 'Add highlight' }).click();
   await card
     .getByPlaceholder('Write a highlight…')
-    .fill('Built deterministic browser release gates');
+    .fill('Built 24 deterministic browser release gates and reduced escaped defects by 35%.');
   await card.getByRole('button', { name: 'Add highlight' }).click();
   await card
     .getByPlaceholder('Write a highlight…')
     .nth(1)
-    .fill('Reduced regressions with zero-retry checks');
+    .fill('Reduced regression triage time by 40% with zero-retry checks across 18 workflows.');
   await card.getByRole('button', { name: 'Save' }).click();
 
   section = page.locator('#editor-section-projects');
@@ -91,9 +94,30 @@ async function expectPreview(page: Page, value: string, present = true): Promise
   }
 }
 
-test('final Demo functional correction journey', async ({ page }) => {
+async function captureAtsState(page: Page) {
+  return page.evaluate(() => {
+    const key = Object.keys(sessionStorage).find((candidate) =>
+      candidate.startsWith('resumeiq_ats_'),
+    );
+    const cached = key ? JSON.parse(sessionStorage.getItem(key) ?? 'null') : null;
+    const versionId = key?.slice('resumeiq_ats_'.length) ?? '';
+    const versions = JSON.parse(localStorage.getItem('resumeiq_versions') ?? '[]') as {
+      id: string;
+      templateId: string;
+      content: unknown;
+    }[];
+    const version = versions.find((candidate) => candidate.id === versionId) ?? null;
+    const persistedSignature = version
+      ? `${version.templateId}|${JSON.stringify(version.content)}`
+      : null;
+    return { versionId, cached, version, persistedSignature };
+  });
+}
+
+test('final Demo functional correction journey', async ({ page }, testInfo) => {
   test.setTimeout(240_000);
   await mkdir(EVIDENCE, { recursive: true });
+  await mkdir(STABILIZATION, { recursive: true });
   let pdfRequests = 0;
   page.on('request', (request) => {
     if (/\/versions\/[^/]+\/pdf$/.test(new URL(request.url()).pathname)) pdfRequests += 1;
@@ -113,8 +137,11 @@ test('final Demo functional correction journey', async ({ page }) => {
   await skills.getByRole('button', { name: 'Add', exact: true }).click();
 
   const panel = page.locator('.ats-panel');
+  const beforeStartedAt = Date.now();
   await panel.getByRole('button', { name: 'Run analysis' }).click();
+  await expect(panel.getByText('Analysing your resume…')).toBeVisible();
   await expect(panel.locator('.ats-score')).toBeVisible();
+  const beforeCompletedAt = Date.now();
   const before = Number(await panel.locator('.ats-score').getAttribute('aria-valuenow'));
   const beforeExperience = await panel
     .getByRole('progressbar', { name: /Work experience score/ })
@@ -123,6 +150,7 @@ test('final Demo functional correction journey', async ({ page }) => {
     .getByRole('progressbar', { name: /Education score/ })
     .getAttribute('aria-valuenow');
   const beforeFindings = await panel.locator('.ats-finding__message').allTextContents();
+  const beforeState = await captureAtsState(page);
   expect(before).not.toBe(97);
   await expect(
     panel.getByRole('progressbar', { name: /Work experience score/ }),
@@ -142,7 +170,11 @@ test('final Demo functional correction journey', async ({ page }) => {
   await expectPreview(page, 'Certified Release Professional');
   await expectPreview(page, 'Zero Retry Award');
   await expect(panel.locator('.ats-panel__stale')).toBeVisible();
+  const afterStartedAt = Date.now();
   await panel.getByRole('button', { name: 'Run analysis' }).click();
+  await expect(panel.getByText('Analysing your resume…')).toBeVisible();
+  await expect(panel.locator('.ats-score')).toBeVisible();
+  const afterCompletedAt = Date.now();
   const after = Number(await panel.locator('.ats-score').getAttribute('aria-valuenow'));
   const afterExperience = await panel
     .getByRole('progressbar', { name: /Work experience score/ })
@@ -151,7 +183,8 @@ test('final Demo functional correction journey', async ({ page }) => {
     .getByRole('progressbar', { name: /Education score/ })
     .getAttribute('aria-valuenow');
   const afterFindings = await panel.locator('.ats-finding__message').allTextContents();
-  expect(after).not.toBe(before);
+  const afterState = await captureAtsState(page);
+  expect(after).toBeGreaterThan(before);
   await expect(panel.locator('.ats-panel__findings')).not.toContainText(
     'No work experience entries are present.',
   );
@@ -160,6 +193,7 @@ test('final Demo functional correction journey', async ({ page }) => {
   );
   expect(afterExperience).not.toBe('0');
   expect(afterEducation).not.toBe('80');
+  expect(afterState.cached?.signature).toBe(afterState.persistedSignature);
   await page.screenshot({ path: join(EVIDENCE, 'all-sections-and-ats-after.png'), fullPage: true });
   await writeFile(
     join(EVIDENCE, 'ats-before-after.json'),
@@ -182,6 +216,50 @@ test('final Demo functional correction journey', async ({ page }) => {
       2,
     ),
     'utf8',
+  );
+  await writeFile(
+    join(STABILIZATION, 'ats-before-after.json'),
+    JSON.stringify(
+      {
+        before: {
+          startedAt: beforeStartedAt,
+          completedAt: beforeCompletedAt,
+          durationMs: beforeCompletedAt - beforeStartedAt,
+          overall: before,
+          experience: beforeExperience,
+          education: beforeEducation,
+          findings: beforeFindings,
+          state: beforeState,
+        },
+        after: {
+          startedAt: afterStartedAt,
+          completedAt: afterCompletedAt,
+          durationMs: afterCompletedAt - afterStartedAt,
+          overall: after,
+          experience: afterExperience,
+          education: afterEducation,
+          findings: afterFindings,
+          state: afterState,
+        },
+      },
+      null,
+      2,
+    ),
+  );
+  await writeFile(
+    join(STABILIZATION, `ats-run-${testInfo.repeatEachIndex + 1}.json`),
+    JSON.stringify(
+      {
+        run: testInfo.repeatEachIndex + 1,
+        retries: testInfo.retry,
+        before: { overall: before, experience: beforeExperience, education: beforeEducation },
+        after: { overall: after, experience: afterExperience, education: afterEducation },
+        currentContentSignatureVerified:
+          afterState.cached?.signature === afterState.persistedSignature,
+      },
+      null,
+      2,
+    ),
   );
 
   await expect(page.locator('.editor__save-label')).toHaveText('Draft saved', { timeout: 10_000 });

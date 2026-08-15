@@ -21,6 +21,7 @@
     "scripts/**/*.ts",
     "../shared/ats-template-catalogue.ts",
     "../shared/ats/**/*.ts",
+    "../shared/job-matcher.ts",
     "../frontend/src/app/core/templates/resume-template-renderer.ts",
     "../frontend/src/app/core/templates/template-catalogue.ts"
   ],

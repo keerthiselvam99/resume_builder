@@ -3,6 +3,7 @@ import { getHealth } from '../controllers/health.controller';
 import { exportPdf } from '../controllers/pdf.controller';
 import { login, logout, me, refresh, register } from '../controllers/auth.controller';
 import { runAtsAnalysis } from '../controllers/ats.controller';
+import { runJobMatch } from '../controllers/job-matcher.controller';
 import {
   cloneVersion,
   compareVersions,
@@ -22,7 +23,12 @@ import {
   updateVersionTemplate,
 } from '../controllers/resume.controller';
 import { requireAdmin, requireAuth } from '../middleware/require-auth';
-import { loginLimiter, refreshLimiter, registerLimiter } from '../middleware/rate-limit';
+import {
+  jobMatchLimiter,
+  loginLimiter,
+  refreshLimiter,
+  registerLimiter,
+} from '../middleware/rate-limit';
 
 const router = Router();
 
@@ -57,6 +63,9 @@ router.patch('/versions/:id/template', requireAuth, updateVersionTemplate);
 
 // ATS analysis (a pure function of the saved version; body is ignored)
 router.post('/versions/:id/ats-analysis', requireAuth, runAtsAnalysis);
+
+// Job matching always analyses the authenticated user's server-owned version.
+router.post('/versions/:versionId/job-match', requireAuth, jobMatchLimiter, runJobMatch);
 
 // PDF export (auth + ownership enforced in the controller)
 router.post('/versions/:versionId/pdf', requireAuth, exportPdf);

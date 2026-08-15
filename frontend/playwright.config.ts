@@ -67,7 +67,7 @@ export default defineConfig({
       // baselines below named after this project.
       name: 'chromium',
       testIgnore:
-        /(editor-http-persistence|ats-analysis-http|pdf-export|dummy-resume-acceptance)\.spec\.ts$/,
+        /(editor-http-persistence|ats-analysis-http|pdf-export|dummy-resume-acceptance|job-matcher-acceptance)\.spec\.ts$/,
       use: {
         ...devices['Desktop Chrome'],
         baseURL: MOCK_BASE,
@@ -82,7 +82,7 @@ export default defineConfig({
       workers: 1,
       name: 'http-persistence',
       testMatch:
-        /(editor-http-persistence|ats-analysis-http|pdf-export|dummy-resume-acceptance)\.spec\.ts$/,
+        /(editor-http-persistence|ats-analysis-http|pdf-export|dummy-resume-acceptance|job-matcher-acceptance)\.spec\.ts$/,
       use: {
         ...devices['Desktop Chrome'],
         baseURL: HTTP_BASE,

@@ -1,0 +1,7 @@
+{
+  "baseScore": 81,
+  "relevantScore": 81,
+  "unrelatedScore": 81,
+  "relevantSkillDoesNotLowerScore": true,
+  "unrelatedSkillDoesNotInflateScore": true
+}

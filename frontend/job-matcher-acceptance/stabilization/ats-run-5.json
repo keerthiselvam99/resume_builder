@@ -1,0 +1,15 @@
+{
+  "run": 5,
+  "retries": 0,
+  "before": {
+    "overall": 62,
+    "experience": "0",
+    "education": "80"
+  },
+  "after": {
+    "overall": 90,
+    "experience": "100",
+    "education": "100"
+  },
+  "currentContentSignatureVerified": true
+}

@@ -48,7 +48,7 @@ import { MockBannerComponent } from './mock-banner.component';
               >Templates</a
             >
             <a
-              routerLink="/job-descriptions"
+              routerLink="/job-matcher"
               routerLinkActive="shell-nav__link--active"
               class="shell-nav__link"
               (click)="menuOpen = false"
