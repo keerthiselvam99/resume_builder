@@ -1,0 +1,510 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+    html, body { overflow: hidden; }
+    body {
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      font-size: 10pt;
+      line-height: 1.55;
+      color: #1f2937;
+      background: #ffffff;
+      margin: 0;
+      padding: 0;
+    }
+    .resume-page {
+      width: 210mm;
+      min-height: 297mm;
+      padding: 14mm 16mm;
+      box-sizing: border-box;
+      margin: 0 auto;
+      background: #ffffff;
+      position: relative;
+    }
+    h1, h2, h3 {
+      font-weight: 700;
+      color: #0d9488;
+    }
+    h1 { font-size: 28pt; margin: 0 0 2pt; }
+    h2 { font-size: 14pt; margin: 0 0 3pt; padding-bottom: 1pt; }
+    h3 { font-size: 11pt; margin: 0 0 2pt; }
+    a { color: #0d9488; text-decoration: underline; text-underline-offset: 1px; }
+    a:hover { opacity: 0.8; }
+    .section { margin-bottom: 8pt; }
+    .section__title { border-bottom: 1px solid #d1d5db; padding-bottom: 1pt; margin-bottom: 4pt; text-align: left; font-size: 11.5pt; font-weight: 700; }
+    .entry { margin-bottom: 3pt; }
+    .entry__header { display: flex; justify-content: space-between; align-items: baseline; gap: 8pt; }
+    .entry__header-left { flex: 1; min-width: 0; }
+    .entry__header-right { flex-shrink: 0; text-align: right; font-size: 9pt; color: #1f2937; opacity: 0.8; }
+    .contact-row { display: flex; flex-wrap: wrap; gap: 4pt 12pt; align-items: center; margin-top: 2pt; font-size: 8.5pt; }
+    .contact-row a { text-decoration: none; }
+    .contact-row a:hover { text-decoration: underline; }
+    .contact-row .contact-sep { opacity: 0.5; }
+    .header-title { font-size: 11pt; font-weight: 400; color: #1f2937; opacity: 0.85; margin: 1pt 0 3pt; }
+    .layout-sidebar { display: grid; grid-template-columns: 30% 1fr; gap: 14pt; }
+    .sidebar { min-width: 0; overflow: hidden; }
+    .main-content { min-width: 0; overflow: hidden; }
+    .layout-modern-split { display: grid; grid-template-columns: 62% 38%; gap: 16pt; }
+    .split-main { min-width: 0; overflow: hidden; }
+    .split-accent { min-width: 0; overflow: hidden; border-left: 3px solid #0d9488; padding-left: 12pt; }
+    .banner { text-align: center; margin-bottom: 10pt; }
+    .header-center { text-align: center; }
+    .header-center .contact-row { justify-content: center; }
+    .header-letterhead { display: grid; grid-template-columns: 1fr auto; gap: 12pt; align-items: end; }
+    .hl-main { min-width: 0; }
+    .hl-side { min-width: 0; }
+    .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8pt; align-items: start; }
+    .cards-grid--single { grid-template-columns: 1fr; }
+    .cards-col { min-width: 0; display: flex; flex-direction: column; gap: 8pt; overflow: hidden; }
+    .card { border-radius: 6pt; }
+    .skills-row { display: flex; flex-wrap: wrap; gap: 3pt 8pt; align-items: center; }
+    .skill-tag { display: inline-block; padding: 1pt 6pt; border-radius: 3pt; font-size: 8.5pt; font-weight: 400; }
+    .skill-text { display: inline; }
+    .skill-text .skill-sep { opacity: 0.5; margin: 0 2pt; }
+    .skill-rows { display: flex; flex-direction: column; gap: 3pt; }
+    .skill-row { display: grid; grid-template-columns: auto 1fr; gap: 4pt; align-items: center; }
+    .skill-name { font-size: 9pt; }
+    .skill-bar { display: inline-block; height: 3pt; background: #0d9488; border-radius: 2pt; opacity: 0.8; }
+    .skill-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2pt 8pt; }
+    .skill-cell { display: inline-block; font-size: 9pt; }
+    
+        .resume-page { padding: 12mm 14mm; }
+        .section__title { display: flex; align-items: center; gap: 6pt; border-bottom: none; font-size: 10pt; font-weight: 700; }
+        .section__title::before { content: '◆'; color: #0d9488; font-size: 7pt; transform: rotate(45deg); }
+        .entry li::marker { color: #0d9488; }
+        .entry li { margin-bottom: 1.5pt; }
+        .entry__header-left { padding-left: 8pt; border-left: 1px solid #d1d5db; }
+        .skill-tag { background: transparent; border: 1px solid #0d9488; color: #0d9488; border-radius: 2pt; }
+        ul { padding-left: 16pt; }
+      
+    body { --on-primary: #ffffff; } .section__title { border-bottom-color: #0d9488; } a { color: #0d9488; }
+  </style></head><body><div class="resume-page" data-shell="single"><div class="header"><h1>Jane Doe</h1>
+<p class="header-title">Senior Software Engineer</p>
+<div class="contact-row"><a href="mailto:jane@example.com">jane@example.com</a><span class="contact-sep">&middot;</span><a href="tel:+15550100">+1 555 0100</a><span class="contact-sep">&middot;</span><span>Seattle, WA</span><span class="contact-sep">&middot;</span><a href="https://linkedin.com/in/janedoe">in/janedoe</a><span class="contact-sep">&middot;</span><a href="https://github.com/janedoe">GitHub</a></div></div>
+<div class="section section--summary"><h2>Summary</h2><p>Results-driven Senior Software Engineer with 8+ years of experience building scalable web applications. Proven track record of delivering high-quality software solutions in fast-paced environments. Skilled in full-stack development, cloud architecture, and cross-functional team leadership.</p></div>
+<div class="section"><h2>Experience</h2>
+<div class="entry"><div class="entry__header"><div class="entry__header-left"><strong>Acme Corp</strong> &mdash; <strong>Senior Software Engineer</strong></div><div class="entry__header-right">Jan 2021 &ndash; Present</div></div>
+<div class="entry__header-left" style="font-size: 0.85em; opacity: 0.7;">Seattle, WA</div>
+<ul><li>Led architecture for customer portal serving 500k+ monthly active users.</li><li>Mentored a team of 5 engineers, improving team velocity by 30%.</li><li>Migrated legacy system to microservices, reducing downtime by 99.9%.</li></ul>
+</div>
+<div class="entry"><div class="entry__header"><div class="entry__header-left"><strong>TechStart Inc</strong> &mdash; <strong>Software Engineer</strong></div><div class="entry__header-right">Jun 2019 &ndash; Dec 2020</div></div>
+<div class="entry__header-left" style="font-size: 0.85em; opacity: 0.7;">Portland, OR</div>
+<ul><li>Developed REST APIs using Node.js and Express, handling 10k+ requests daily.</li><li>Implemented CI/CD pipelines with GitHub Actions, cutting deployment time by 50%.</li></ul>
+</div>
+<div class="entry"><div class="entry__header"><div class="entry__header-left"><strong>WebSolutions LLC</strong> &mdash; <strong>Junior Developer</strong></div><div class="entry__header-right">Mar 2018 &ndash; May 2019</div></div>
+<div class="entry__header-left" style="font-size: 0.85em; opacity: 0.7;">San Francisco, CA</div>
+<ul><li>Built responsive UI components using React and Redux.</li><li>Collaborated with UX team to improve page load performance by 40%.</li></ul>
+</div>
+</div>
+<div class="section"><h2>Skills</h2><div class="skills-row"><span class="skill-tag">Angular</span><span class="skill-tag">TypeScript</span><span class="skill-tag">Node.js</span><span class="skill-tag">Python</span><span class="skill-tag">AWS</span><span class="skill-tag">React</span><span class="skill-tag">PostgreSQL</span><span class="skill-tag">Docker</span><span class="skill-tag">Kubernetes</span></div></div>
+<div class="section"><h2>Projects</h2>
+<div class="entry"><div class="entry__header"><div class="entry__header-left"><strong>Enterprise Dashboard</strong> &mdash; <strong>Lead Frontend Engineer</strong></div><div class="entry__header-right">Jan 2023 &ndash; Present</div></div>
+<p>A real-time analytics dashboard for enterprise clients with role-based access control and customizable widgets.</p>
+<p><em>Angular, NgRx, D3.js, Socket.IO, AWS</em></p>
+<p><a href="https://example.com/enterprise-dashboard">View project</a></p>
+</div>
+<div class="entry"><div class="entry__header"><div class="entry__header-left"><strong>API Gateway Platform</strong> &mdash; <strong>Full Stack Developer</strong></div><div class="entry__header-right">Apr 2022 &ndash; Dec 2022</div></div>
+<p>A microservices-based API gateway with rate limiting, authentication, and monitoring capabilities.</p>
+<p><em>Node.js, Express, PostgreSQL, Redis, Docker, Kubernetes</em></p>
+<p><a href="https://example.com/api-gateway">View project</a></p>
+</div>
+</div>
+<div class="section"><h2>Education</h2>
+<div class="entry"><div class="entry__header"><div class="entry__header-left"><strong>University of Washington</strong> &mdash; B.S. <span style="opacity: 0.7;">(Computer Science)</span></div><div class="entry__header-right">Sep 2014 &ndash; Jun 2018</div></div>
+<div class="entry__header-left" style="font-size: 0.85em; opacity: 0.7;">GPA: 3.8</div>
+</div>
+</div>
+<div class="section"><h2>Certifications</h2>
+<div class="entry"><strong>AWS Solutions Architect – Associate</strong> &mdash; Amazon Web Services
+ &middot; ID: AWS-123ABC
+ &middot; <a href="https://aws.amazon.com/certification">View</a>
+</div>
+<div class="entry"><strong>Certified Kubernetes Administrator</strong> &mdash; Cloud Native Computing Foundation
+ &middot; ID: CNCF-456DEF
+ &middot; <a href="https://www.cncf.io/certification">View</a>
+</div>
+</div>
+<div class="section"><h2>Awards &amp; Achievements</h2>
+<div class="entry"><strong>Employee of the Year</strong> &mdash; Acme Corp
+<p>Awarded for outstanding performance, technical leadership, and mentoring contributions.</p>
+</div>
+<div class="entry"><strong>Innovation Award</strong> &mdash; TechStart Inc
+<p>Recognized for developing a CI/CD pipeline that reduced deployment time by 50%.</p>
+</div>
+<div class="entry">Shipped 10+ features in Q1 2024, all with zero production bugs.</div>
+<div class="entry">Achieved 99.99% uptime for Acme Portal over 12-month period.</div>
+</div>
+<div class="section"><h2>Languages</h2><p>English, Spanish</p></div>
+<div class="section"><h2>Open Source</h2><ul><li>Contributed to Angular CLI.</li><li>Maintained an open-source resume-builder library with 500+ stars.</li></ul></div></div>
+<script>
+(function () {
+  var PX_PER_MM = 96 / 25.4;
+  var PAGE_H = 297 * PX_PER_MM;
+  var TOL = 6;
+
+  var root = document.querySelector('.resume-page');
+  if (!root || document.getElementById('resume-pages')) { return; }
+
+  var cs = window.getComputedStyle(root);
+  var padTop = parseFloat(cs.paddingTop) || 0;
+  var padBottom = parseFloat(cs.paddingBottom) || 0;
+  var borderTop = parseFloat(cs.borderTopWidth) || 0;
+  var borderBottom = parseFloat(cs.borderBottomWidth) || 0;
+  var innerH = PAGE_H - padTop - padBottom - borderTop - borderBottom;
+  var shell = root.getAttribute('data-shell') || 'single';
+
+  function childrenOf(el) {
+    var out = [];
+    for (var i = 0; i < el.children.length; i += 1) { out.push(el.children[i]); }
+    return out;
+  }
+
+  function marginOf(el, prop) {
+    return parseFloat(window.getComputedStyle(el)[prop]) || 0;
+  }
+
+  function sectionUnits(section, wrapperClass, wrapperPad) {
+    var kids = childrenOf(section);
+    var h2 = null;
+    var content = [];
+    for (var i = 0; i < kids.length; i += 1) {
+      if (kids[i].tagName === 'H2' && !h2) { h2 = kids[i]; } else { content.push(kids[i]); }
+    }
+    if (!content.length) { return []; }
+    var sectionMargin = marginOf(section, 'marginBottom');
+    if (content.length === 1) {
+      return [{ whole: section, wrapper: wrapperClass || null, wrapperPad: wrapperPad || 0 }];
+    }
+    var units = [];
+    if (h2) {
+      units.push({
+        headingHtml: h2.outerHTML,
+        headingEl: h2,
+        headingTop: marginOf(h2, 'marginTop'),
+        headingBottom: marginOf(h2, 'marginBottom'),
+        cls: section.className,
+        sectionMargin: sectionMargin,
+        wrapper: wrapperClass || null,
+        wrapperPad: wrapperPad || 0
+      });
+    }
+    for (var j = 0; j < content.length; j += 1) {
+      units.push({
+        content: content[j],
+        cls: section.className,
+        sectionMargin: sectionMargin,
+        wrapper: wrapperClass || null,
+        wrapperPad: wrapperPad || 0
+      });
+    }
+    return units;
+  }
+
+  function flowUnits(flowEl) {
+    var units = [];
+    var kids = childrenOf(flowEl);
+    for (var i = 0; i < kids.length; i += 1) {
+      var child = kids[i];
+      var cls = typeof child.className === 'string' ? child.className : '';
+      var wrapperClass = null;
+      var wrapperPad = 0;
+      if (child.tagName === 'DIV' && cls.indexOf('card') >= 0) {
+        var innerSection = child.querySelector(':scope > .section');
+        if (innerSection) {
+          var ws = window.getComputedStyle(child);
+          wrapperPad =
+            (parseFloat(ws.paddingTop) || 0) + (parseFloat(ws.paddingBottom) || 0);
+          wrapperClass = child.className;
+          child = innerSection;
+          cls = typeof child.className === 'string' ? child.className : '';
+        }
+      }
+      if (child.tagName === 'DIV' && cls.indexOf('section') >= 0) {
+        var su = sectionUnits(child, wrapperClass, wrapperPad);
+        if (su.length === 1 && su[0].whole) {
+          units.push({ whole: wrapperClass ? child.parentNode : su[0].whole });
+        } else {
+          for (var k = 0; k < su.length; k += 1) { units.push(su[k]); }
+        }
+      } else {
+        units.push({ whole: child });
+      }
+    }
+    return units;
+  }
+
+  function collapseTop(el) {
+    var fc = el.children[0];
+    if (fc && fc.tagName === 'H2') { return marginOf(fc, 'marginTop'); }
+    return marginOf(el, 'marginTop');
+  }
+
+  function collapseBottom(el) {
+    var mb = marginOf(el, 'marginBottom');
+    var lc = el.children[el.children.length - 1];
+    if (lc) {
+      var lmb = marginOf(lc, 'marginBottom');
+      if (lmb > mb) { mb = lmb; }
+    }
+    return mb;
+  }
+
+  function pageBlocks(flowEl) {
+    var units = flowUnits(flowEl);
+    var blocks = [];
+    for (var i = 0; i < units.length; i += 1) {
+      var u = units[i];
+      if (u.headingHtml) {
+        var j = i + 1;
+        if (j < units.length && units[j].content) {
+          blocks.push({
+            headingHtml: u.headingHtml,
+            content: units[j].content,
+            cls: u.cls,
+            wrapper: u.wrapper
+          });
+          i = j;
+        }
+      } else if (u.content) {
+        blocks.push({
+          content: u.content,
+          cls: u.cls,
+          wrapper: u.wrapper
+        });
+      } else if (u.whole) {
+        blocks.push({ whole: u.whole });
+      }
+    }
+    return blocks;
+  }
+
+  function renderBlock(b) {
+    var fragment;
+    if (b.whole) { return b.whole.outerHTML; }
+    if (b.headingHtml) {
+      fragment = '<div class="' + b.cls + '">' + b.headingHtml + b.content.outerHTML + '</div>';
+    } else {
+      fragment = '<div class="' + b.cls + '">' + b.content.outerHTML + '</div>';
+    }
+    if (b.wrapper) {
+      return '<div class="' + b.wrapper + '">' + fragment + '</div>';
+    }
+    return fragment;
+  }
+
+  function blocksToHtml(blocks) {
+    var s = '';
+    for (var i = 0; i < blocks.length; i += 1) { s += renderBlock(blocks[i]); }
+    return s;
+  }
+
+  function placeBlocks(blocks, budget, measurer) {
+    var pages = [];
+    var current = [];
+    var curHtml = '';
+    for (var i = 0; i < blocks.length; i += 1) {
+      var html = renderBlock(blocks[i]);
+      var h = measurer(curHtml + html);
+      if (current.length && h > budget - TOL) {
+        pages.push(current);
+        current = [];
+        curHtml = '';
+        budget = innerH;
+        h = measurer(html);
+      }
+      current.push(blocks[i]);
+      curHtml += html;
+    }
+    if (current.length) { pages.push(current); }
+    return pages;
+  }
+
+  function detectShell(pageEl) {
+    var result = { shell: 'single', grid: null, flows: [], headerEl: null };
+    var s = pageEl.getAttribute('data-shell') || 'single';
+    if (s === 'sidebar') {
+      var grid = pageEl.querySelector('.layout-sidebar');
+      var sb = grid && grid.querySelector('.sidebar');
+      var mc = grid && grid.querySelector('.main-content');
+      if (sb && mc) {
+        result.shell = 'sidebar'; result.grid = grid; result.flows = [sb, mc];
+      }
+    } else if (s === 'split') {
+      var grid2 = pageEl.querySelector('.layout-modern-split');
+      var sm = grid2 && grid2.querySelector('.split-main');
+      var sa = grid2 && grid2.querySelector('.split-accent');
+      if (sm && sa) {
+        result.shell = 'split'; result.grid = grid2; result.flows = [sm, sa];
+        var hd = grid2.previousElementSibling;
+        if (hd && hd.tagName === 'DIV') { result.headerEl = hd; }
+      }
+    } else if (s === 'cards') {
+      var grid3 = pageEl.querySelector('.cards-grid');
+      var colList = [];
+      if (grid3) {
+        var cols = childrenOf(grid3);
+        for (var c = 0; c < cols.length; c += 1) {
+          if (cols[c].className && cols[c].className.indexOf('cards-col') >= 0) { colList.push(cols[c]); }
+        }
+      }
+      if (colList.length) {
+        result.shell = 'cards'; result.grid = grid3; result.flows = colList;
+        var hd2 = grid3.previousElementSibling;
+        if (hd2 && hd2.tagName === 'DIV') { result.headerEl = hd2; }
+      }
+    } else {
+      result.shell = 'single'; result.grid = null; result.flows = [pageEl];
+    }
+    if (result.shell === 'single' && !result.flows.length) { result.flows = [pageEl]; }
+    return result;
+  }
+
+  var layout = detectShell(root);
+  shell = layout.shell;
+  var grid = layout.grid;
+  var headerEl = layout.headerEl;
+
+  var hiddenPage = root.cloneNode(true);
+  hiddenPage.style.position = 'absolute';
+  hiddenPage.style.visibility = 'hidden';
+  hiddenPage.style.top = '0px';
+  hiddenPage.style.left = '0px';
+  document.body.appendChild(hiddenPage);
+  var hiddenLayout = detectShell(hiddenPage);
+
+  function flowMeasurer(hiddenFlow) {
+    return function (html) {
+      hiddenFlow.innerHTML = html;
+      var last = hiddenFlow.lastElementChild;
+      if (!last) { return 0; }
+      var fcs = window.getComputedStyle(hiddenFlow);
+      var top = hiddenFlow.getBoundingClientRect().top +
+        (parseFloat(fcs.borderTopWidth) || 0) + (parseFloat(fcs.paddingTop) || 0);
+      var lastMargin = (parseFloat(window.getComputedStyle(last).marginBottom) || 0);
+      return last.getBoundingClientRect().bottom - top + lastMargin;
+    };
+  }
+
+  var sourceHeadings = {};
+  var hs = root.querySelectorAll('h2, .section__title');
+  for (var hIdx = 0; hIdx < hs.length; hIdx += 1) {
+    var t = hs[hIdx].textContent.trim();
+    if (t) { sourceHeadings[t] = (sourceHeadings[t] || 0) + 1; }
+  }
+
+  var firstBudget = innerH;
+  if (headerEl) {
+    var headerH = headerEl.offsetHeight + collapseTop(headerEl) + collapseBottom(headerEl);
+    if (headerH >= innerH - TOL) {
+      firstBudget = innerH;
+    } else {
+      firstBudget = Math.max(innerH - headerH - TOL, 120);
+    }
+  }
+
+  var flowPageLists = [];
+  for (var f = 0; f < layout.flows.length; f += 1) {
+    var flowVPad = 0;
+    if (layout.shell !== 'single') {
+      var fcs2 = window.getComputedStyle(layout.flows[f]);
+      flowVPad =
+        (parseFloat(fcs2.paddingTop) || 0) + (parseFloat(fcs2.paddingBottom) || 0) +
+        (parseFloat(fcs2.borderTopWidth) || 0) + (parseFloat(fcs2.borderBottomWidth) || 0);
+    }
+    flowPageLists.push(placeBlocks(
+      pageBlocks(layout.flows[f]),
+      Math.max(firstBudget - flowVPad, 80),
+      flowMeasurer(hiddenLayout.flows[f])
+    ));
+  }
+
+  var pageCount = 1;
+  for (var pf = 0; pf < flowPageLists.length; pf += 1) {
+    if (flowPageLists[pf].length > pageCount) { pageCount = flowPageLists[pf].length; }
+  }
+
+  var pageHtmls = [];
+  for (var p = 0; p < pageCount; p += 1) {
+    var body = '';
+    if (shell === 'sidebar') {
+      body = '<div class="layout-sidebar"><div class="sidebar">' + blocksToHtml(flowPageLists[0][p] || []) + '</div><div class="main-content">' + blocksToHtml(flowPageLists[1][p] || []) + '</div></div>';
+    } else if (shell === 'split') {
+      body = '<div class="' + grid.className + '"><div class="split-main">' + blocksToHtml(flowPageLists[0][p] || []) + '</div><div class="split-accent">' + blocksToHtml(flowPageLists[1][p] || []) + '</div></div>';
+      if (p === 0 && headerEl) { body = headerEl.outerHTML + body; }
+    } else if (shell === 'cards') {
+      body = '<div class="' + grid.className + '"><div class="cards-col">' + blocksToHtml(flowPageLists[0][p] || []) + '</div><div class="cards-col">' + blocksToHtml(flowPageLists[1][p] || []) + '</div></div>';
+      if (p === 0 && headerEl) { body = headerEl.outerHTML + body; }
+    } else {
+      body = blocksToHtml(flowPageLists[0][p] || []);
+    }
+    var mb = p < pageCount - 1 ? ' style="margin-bottom: 6mm;"' : '';
+    pageHtmls.push('<div class="resume-page"' + mb + '>' + body + '</div>');
+  }
+
+  var stack = document.createElement('div');
+  stack.id = 'resume-pages';
+  stack.innerHTML = pageHtmls.join('');
+  root.parentNode.replaceChild(stack, root);
+  if (hiddenPage.parentNode) { hiddenPage.parentNode.removeChild(hiddenPage); }
+
+  document.documentElement.style.overflow = 'visible';
+  document.body.style.overflow = 'visible';
+
+  var report = { overflowingPages: 0, orphanedHeadings: 0, clippedBlocks: 0, missingSections: 0, pageCount: pageCount };
+  var pageEls = childrenOf(stack);
+
+  function blockContainers(pageEl) {
+    var containers = [];
+    if (shell === 'sidebar') {
+      var sBox = pageEl.querySelector('.layout-sidebar .sidebar');
+      var mBox = pageEl.querySelector('.layout-sidebar .main-content');
+      if (sBox) { containers.push(sBox); }
+      if (mBox) { containers.push(mBox); }
+    } else if (shell === 'split') {
+      var smBox = pageEl.querySelector('.split-main');
+      var saBox = pageEl.querySelector('.split-accent');
+      if (smBox) { containers.push(smBox); }
+      if (saBox) { containers.push(saBox); }
+    } else if (shell === 'cards') {
+      var colBoxes = pageEl.querySelectorAll('.cards-col');
+      for (var q = 0; q < colBoxes.length; q += 1) { containers.push(colBoxes[q]); }
+    } else {
+      containers.push(pageEl);
+    }
+    return containers;
+  }
+
+  function isHeading(el) {
+    var cls = typeof el.className === 'string' ? el.className : '';
+    return el.tagName === 'H2' || cls.indexOf('section__title') >= 0;
+  }
+
+  for (var i = 0; i < pageEls.length; i += 1) {
+    var pageEl = pageEls[i];
+    if (pageEl.offsetHeight > PAGE_H + 3) { report.overflowingPages += 1; }
+    var containers = blockContainers(pageEl);
+    var pr = pageEl.getBoundingClientRect();
+    for (var c2 = 0; c2 < containers.length; c2 += 1) {
+      var cont = containers[c2];
+      var kids = childrenOf(cont);
+      if (kids.length && isHeading(kids[kids.length - 1])) { report.orphanedHeadings += 1; }
+      for (var k2 = 0; k2 < kids.length; k2 += 1) {
+        var r = kids[k2].getBoundingClientRect();
+        if (r.bottom > pr.bottom + 1 || r.top < pr.top - 1) { report.clippedBlocks += 1; }
+      }
+    }
+  }
+
+  var outHeadings = {};
+  var ohs = stack.querySelectorAll('h2, .section__title');
+  for (var o = 0; o < ohs.length; o += 1) {
+    var ot = ohs[o].textContent.trim();
+    if (ot) { outHeadings[ot] = (outHeadings[ot] || 0) + 1; }
+  }
+  for (var key in sourceHeadings) {
+    if (Object.prototype.hasOwnProperty.call(sourceHeadings, key)) {
+      if (outHeadings[key] !== 1) { report.missingSections += 1; }
+    }
+  }
+
+  window.__paginationReport = report;
+})();
+</script>
+</body></html>

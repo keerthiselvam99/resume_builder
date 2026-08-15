@@ -1,0 +1,7 @@
+{
+  "name": "resumeiq-workspace",
+  "private": true,
+  "scripts": {
+    "start:full": "npm --prefix frontend run start:full"
+  }
+}

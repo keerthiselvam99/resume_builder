@@ -1,0 +1,62 @@
+{
+  "1440x900": {
+    "documentOverflow": 0,
+    "bodyOverflow": 0,
+    "previewRatio": 1.4143042759272384,
+    "report": {
+      "overflowingPages": 0,
+      "orphanedHeadings": 0,
+      "clippedBlocks": 0,
+      "missingSections": 0,
+      "pageCount": 2
+    }
+  },
+  "1280x800": {
+    "documentOverflow": 0,
+    "bodyOverflow": 0,
+    "previewRatio": 1.4143042759272384,
+    "report": {
+      "overflowingPages": 0,
+      "orphanedHeadings": 0,
+      "clippedBlocks": 0,
+      "missingSections": 0,
+      "pageCount": 2
+    }
+  },
+  "1024x768": {
+    "documentOverflow": 0,
+    "bodyOverflow": 0,
+    "previewRatio": 1.4143042759272384,
+    "report": {
+      "overflowingPages": 0,
+      "orphanedHeadings": 0,
+      "clippedBlocks": 0,
+      "missingSections": 0,
+      "pageCount": 2
+    }
+  },
+  "768x1024": {
+    "documentOverflow": 0,
+    "bodyOverflow": 0,
+    "previewRatio": null,
+    "report": {
+      "overflowingPages": 0,
+      "orphanedHeadings": 0,
+      "clippedBlocks": 0,
+      "missingSections": 0,
+      "pageCount": 2
+    }
+  },
+  "390x844": {
+    "documentOverflow": 0,
+    "bodyOverflow": 0,
+    "previewRatio": null,
+    "report": {
+      "overflowingPages": 0,
+      "orphanedHeadings": 0,
+      "clippedBlocks": 0,
+      "missingSections": 0,
+      "pageCount": 2
+    }
+  }
+}

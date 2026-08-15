@@ -1,0 +1,49 @@
+# ResumeIQ local Oracle Database Free (development).
+#
+# Image: gvenzl/oracle-free pinned to an exact release (NOT latest).
+# Conventions (healthcheck.sh, /opt/oracle/oradata, sqlplus) verified against
+# the image's official repository: https://github.com/gvenzl/oci-oracle-free
+#
+# Notes
+# - Port 1521 binds to localhost only (development).
+# - Credentials come from database/.env (git-ignored); compose interpolates
+#   ORACLE_SYSTEM_PASSWORD (needed at first container start and by the one-time
+#   `--bootstrap` step). No password is committed anywhere.
+# - The container only boots the database. Schema/migrations/grants are applied
+#   by database/scripts/apply-migrations.mjs (run `--bootstrap` once on a fresh
+#   volume, then the plain command on every deployment) — not by container init
+#   scripts, which would only run on first-volume creation.
+# - A named volume persists the database across container restarts.
+#   `docker compose -f database/docker-compose.oracle.yml restart oracle` keeps
+#   data; `down -v` destroys it (only via oracle-verify.ps1 -Fresh after
+#   explicit confirmation).
+
+services:
+  oracle:
+    image: gvenzl/oracle-free:23.26.2-slim
+    container_name: resumeiq-oracle
+    environment:
+      # SYS/SYSTEM password; used at first container start and by grant-sync.
+      ORACLE_PASSWORD: ${ORACLE_SYSTEM_PASSWORD:?Set ORACLE_SYSTEM_PASSWORD in database/.env}
+    ports:
+      - "127.0.0.1:1521:1521"
+    volumes:
+      - oracle-data:/opt/oracle/oradata
+      # Read-only bind mounts so sqlplus inside the container can run the
+      # committed migration/seed/grant/reset scripts.
+      - ./migrations:/opt/oracle/migrations:ro
+      - ./seed-data:/opt/oracle/seed-data:ro
+      - ./sql:/opt/oracle/sql:ro
+      - ./scripts:/opt/oracle/scripts:ro
+    healthcheck:
+      # healthcheck.sh (provided by the image) exits 0 once FREEPDB1 is READ WRITE.
+      test: ["CMD", "healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+      start_interval: 5s
+    restart: unless-stopped
+
+volumes:
+  oracle-data:

@@ -1,0 +1,32 @@
+﻿Γ¥» Building...
+Γ£ö Building...
+Initial chunk files | Names                      |  Raw size
+chunk-4DS3TYOZ.js   | -                          |   1.49 MB | 
+main.js             | main                       |  27.98 kB | 
+styles.css          | styles                     |   3.45 kB | 
+chunk-75AGPC3Y.js   | -                          |   2.52 kB | 
+
+                    | Initial total              |   1.53 MB
+
+Lazy chunk files    | Names                      |  Raw size
+chunk-25HQWJPD.js   | resume-editor-component    | 234.53 kB | 
+chunk-HKLCZUD3.js   | -                          | 164.57 kB | 
+chunk-WQNKWRRO.js   | -                          |  60.99 kB | 
+chunk-7O7MRJQX.js   | template-preview-component |  36.44 kB | 
+chunk-HCO7BBYI.js   | gallery-component          |  34.32 kB | 
+chunk-XXWUSQDI.js   | dashboard-component        |  30.72 kB | 
+chunk-DVZERCOG.js   | create-resume-component    |  19.11 kB | 
+chunk-6SX5LZPF.js   | -                          |  12.31 kB | 
+chunk-CFNOES6L.js   | -                          |  10.94 kB | 
+chunk-D774SH55.js   | forgot-password-component  |  10.44 kB | 
+chunk-X6TI3BOR.js   | register-component         |  10.32 kB | 
+chunk-UWHSNCNL.js   | reset-password-component   |  10.07 kB | 
+chunk-CG5F5NR7.js   | login-component            |   9.27 kB | 
+chunk-JV2CUYNM.js   | -                          |   8.85 kB | 
+chunk-4FVCIM3N.js   | -                          |   7.84 kB | 
+...and 1 more lazy chunks files. Use "--verbose" to show all the files.
+
+Application bundle generation complete. [20.528 seconds] - 2026-08-13T04:06:59.033Z
+
+Output location: C:\Users\Ruban R\Desktop\keerthi\resume_builder\frontend\dist\frontend
+

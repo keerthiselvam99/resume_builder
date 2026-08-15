@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "lib": ["ES2022", "DOM"],
+    "outDir": "dist",
+    "rootDir": "..",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "declaration": false,
+    "sourceMap": true,
+    "types": ["node"]
+  },
+  "include": [
+    "src/**/*.ts",
+    "test/**/*.ts",
+    "scripts/**/*.ts",
+    "../shared/ats-template-catalogue.ts",
+    "../shared/ats/**/*.ts",
+    "../frontend/src/app/core/templates/resume-template-renderer.ts",
+    "../frontend/src/app/core/templates/template-catalogue.ts"
+  ],
+  "exclude": ["node_modules", "dist"]
+}

@@ -1,0 +1,31 @@
+{
+  "before": {
+    "overall": 62,
+    "experience": "0",
+    "education": "80",
+    "findings": [
+      "No work experience entries are present.",
+      "Several standard resume sections are missing.",
+      "No phone number is listed.",
+      "No location is listed.",
+      "Fewer than three distinct skills are listed.",
+      "The summary has no measurable or concrete detail.",
+      "No education entries are present.",
+      "No profile links are listed."
+    ]
+  },
+  "after": {
+    "overall": 83,
+    "experience": "65",
+    "education": "100",
+    "findings": [
+      "Fewer than half of the experience bullets are measurable.",
+      "No phone number is listed.",
+      "No location is listed.",
+      "1 work experience entry is missing dates.",
+      "Fewer than three distinct skills are listed.",
+      "The summary has no measurable or concrete detail.",
+      "No profile links are listed."
+    ]
+  }
+}

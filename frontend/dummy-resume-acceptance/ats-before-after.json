@@ -1,0 +1,226 @@
+{
+  "incomplete": {
+    "versionId": "v-8403040b-ef41-49a1-9500-6c22ea3dfda8",
+    "rulesetVersion": "ats-rules-v1",
+    "overallScore": 72,
+    "categories": [
+      {
+        "key": "contact",
+        "label": "Contact information",
+        "weight": 15,
+        "earnedPoints": 15,
+        "maxPoints": 15,
+        "score": 100
+      },
+      {
+        "key": "summary",
+        "label": "Professional summary",
+        "weight": 10,
+        "earnedPoints": 10,
+        "maxPoints": 10,
+        "score": 100
+      },
+      {
+        "key": "experience",
+        "label": "Work experience",
+        "weight": 20,
+        "earnedPoints": 0,
+        "maxPoints": 20,
+        "score": 0
+      },
+      {
+        "key": "skills",
+        "label": "Skills",
+        "weight": 10,
+        "earnedPoints": 10,
+        "maxPoints": 10,
+        "score": 100
+      },
+      {
+        "key": "education",
+        "label": "Education",
+        "weight": 5,
+        "earnedPoints": 4,
+        "maxPoints": 5,
+        "score": 80
+      },
+      {
+        "key": "structure",
+        "label": "Structure & sections",
+        "weight": 10,
+        "earnedPoints": 3,
+        "maxPoints": 10,
+        "score": 30
+      },
+      {
+        "key": "links",
+        "label": "Links",
+        "weight": 5,
+        "earnedPoints": 5,
+        "maxPoints": 5,
+        "score": 100
+      },
+      {
+        "key": "template",
+        "label": "Template",
+        "weight": 10,
+        "earnedPoints": 10,
+        "maxPoints": 10,
+        "score": 100
+      },
+      {
+        "key": "contentQuality",
+        "label": "Content quality",
+        "weight": 15,
+        "earnedPoints": 15,
+        "maxPoints": 15,
+        "score": 100
+      }
+    ],
+    "findings": [
+      {
+        "code": "experience.none",
+        "severity": "error",
+        "category": "experience",
+        "section": "Work experience",
+        "message": "No work experience entries are present.",
+        "evidence": {
+          "kind": "missing",
+          "value": "experience"
+        },
+        "suggestion": "Add at least one role with measurable achievement bullets.",
+        "pointsLost": 20
+      },
+      {
+        "code": "education.none",
+        "severity": "info",
+        "category": "education",
+        "section": "Education",
+        "message": "No education entries are present.",
+        "evidence": {
+          "kind": "missing",
+          "value": "education"
+        },
+        "suggestion": "Add your degrees and certifications; many ATS filters screen on education.",
+        "pointsLost": 1
+      },
+      {
+        "code": "structure.sections.sparse",
+        "severity": "error",
+        "category": "structure",
+        "section": "Sections",
+        "message": "Several standard resume sections are missing.",
+        "evidence": {
+          "kind": "missing",
+          "value": "Work experience, Education"
+        },
+        "suggestion": "Add the standard sections recruiters and ATS systems expect.",
+        "pointsLost": 7
+      }
+    ],
+    "summary": {
+      "errors": 2,
+      "warnings": 0,
+      "info": 1
+    }
+  },
+  "complete": {
+    "versionId": "v-8403040b-ef41-49a1-9500-6c22ea3dfda8",
+    "rulesetVersion": "ats-rules-v1",
+    "overallScore": 98,
+    "categories": [
+      {
+        "key": "contact",
+        "label": "Contact information",
+        "weight": 15,
+        "earnedPoints": 15,
+        "maxPoints": 15,
+        "score": 100
+      },
+      {
+        "key": "summary",
+        "label": "Professional summary",
+        "weight": 10,
+        "earnedPoints": 10,
+        "maxPoints": 10,
+        "score": 100
+      },
+      {
+        "key": "experience",
+        "label": "Work experience",
+        "weight": 20,
+        "earnedPoints": 20,
+        "maxPoints": 20,
+        "score": 100
+      },
+      {
+        "key": "skills",
+        "label": "Skills",
+        "weight": 10,
+        "earnedPoints": 10,
+        "maxPoints": 10,
+        "score": 100
+      },
+      {
+        "key": "education",
+        "label": "Education",
+        "weight": 5,
+        "earnedPoints": 5,
+        "maxPoints": 5,
+        "score": 100
+      },
+      {
+        "key": "structure",
+        "label": "Structure & sections",
+        "weight": 10,
+        "earnedPoints": 10,
+        "maxPoints": 10,
+        "score": 100
+      },
+      {
+        "key": "links",
+        "label": "Links",
+        "weight": 5,
+        "earnedPoints": 5,
+        "maxPoints": 5,
+        "score": 100
+      },
+      {
+        "key": "template",
+        "label": "Template",
+        "weight": 10,
+        "earnedPoints": 10,
+        "maxPoints": 10,
+        "score": 100
+      },
+      {
+        "key": "contentQuality",
+        "label": "Content quality",
+        "weight": 15,
+        "earnedPoints": 13,
+        "maxPoints": 15,
+        "score": 86.66666666666667
+      }
+    ],
+    "findings": [
+      {
+        "code": "content.repeatedWords",
+        "severity": "info",
+        "category": "contentQuality",
+        "section": "Content quality",
+        "message": "\"angular\" is repeated 6 times.",
+        "evidence": {
+          "kind": "count",
+          "value": 6
+        },
+        "suggestion": "Vary the wording to look more natural.",
+        "pointsLost": 2
+      }
+    ],
+    "summary": {
+      "errors": 0,
+      "warnings": 0,
+      "info": 1
+    }
+  }
+}

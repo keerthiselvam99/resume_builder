@@ -1,0 +1,14 @@
+npm run start:full
+
+[start:full] Full application starting…
+[start:full]   Backend API : http://127.0.0.1:3000  (PDF worker warm-up enabled)
+[start:full]   Full app     : http://127.0.0.1:4201  (Download PDF works here)
+[start:full]   Press Ctrl+C to stop.
+
+Acceptance readiness used by the zero-retry Playwright gate:
+- GET http://127.0.0.1:3000/livez -> HTTP 200 before browser acceptance checks
+- GET http://127.0.0.1:3000/pdfz -> HTTP 200 before PDF export
+- Angular HTTP environment -> http://127.0.0.1:4201
+- API proxy target -> http://127.0.0.1:3000
+- DATA_STORE=memory (Oracle-free)
+- PDF_WARMUP=true

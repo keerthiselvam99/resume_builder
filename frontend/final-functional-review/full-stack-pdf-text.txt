@@ -1,0 +1,1 @@
+Summary  Backend-rendered resume summary used to give the PDF real text.  Experience  HTTP Gate Labs   —   Release Engineer  Awards & Achievements  HTTP Zero Retry Award   — Quality Council  Projects  HTTP Evidence Console   — Verified PDF output  Education  HTTP Quality University   — BSc Quality  Certifications  HTTP Certified Release Professional   — Standards Board – Present

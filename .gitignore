@@ -1,0 +1,23 @@
+# Environment files — credentials must never be committed.
+.env
+.env.*
+!.env.example
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+
+# Dependencies and build/cache output
+node_modules/
+dist/
+.angular/
+coverage/
+
+# Test runner transient output (approved evidence folders remain tracked)
+playwright-report/
+test-results/
+blob-report/
+
+# Local runtime output
+*.log
+*.pid

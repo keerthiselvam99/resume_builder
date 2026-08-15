@@ -1,0 +1,45 @@
+﻿
+Running 15 tests using 4 workers
+
+  Γ£ô   2 [chromium] ΓÇ║ e2e\preview-controls.spec.ts:60:7 ΓÇ║ Template preview controls ΓÇ║ fit mode produces no horizontal scrollbar in the template preview (8.8s)
+  Γ£ô   1 [chromium] ΓÇ║ e2e\preview-controls.spec.ts:27:7 ΓÇ║ Template preview controls ΓÇ║ theme changes keep the full A4 sheet contained without scrollbars (9.0s)
+  Γ£ô   4 [chromium] ΓÇ║ e2e\preview-controls.spec.ts:71:7 ΓÇ║ Template preview controls ΓÇ║ fit mode produces no horizontal scrollbar in the editor preview (9.4s)
+  Γ£ô   3 [chromium] ΓÇ║ e2e\preview-controls.spec.ts:87:7 ΓÇ║ Empty editor preview ΓÇ║ a fresh resume shows the helpful empty state, not a blank page (10.5s)
+  Γ£ô   6 [chromium] ΓÇ║ e2e\ui-regressions.spec.ts:34:7 ΓÇ║ Dashboard tabs: contrast and focus ΓÇ║ active tab uses the navy background with white text and aria-current (2.5s)
+  Γ£ô   5 [chromium] ΓÇ║ e2e\ui-regressions.spec.ts:45:7 ΓÇ║ Dashboard tabs: contrast and focus ΓÇ║ hovering a tab shows the navy background with white text (2.6s)
+  Γ£ô   7 [chromium] ΓÇ║ e2e\ui-regressions.spec.ts:56:7 ΓÇ║ Dashboard tabs: contrast and focus ΓÇ║ a focused tab shows a visible outline (2.6s)
+  Γ£ô   8 [chromium] ΓÇ║ e2e\ui-regressions.spec.ts:83:7 ΓÇ║ Dashboard tabs: contrast and focus ΓÇ║ Drafts tab navigates to the drafts list (2.2s)
+  Γ£ô   9 [chromium] ΓÇ║ e2e\ui-regressions.spec.ts:94:7 ΓÇ║ Navigation bar ΓÇ║ the navbar exposes no Drafts item while the dashboard keeps it as a tab (2.1s)
+  Γ£ô  11 [chromium] ΓÇ║ e2e\ui-regressions.spec.ts:141:7 ΓÇ║ Template preview stage ΓÇ║ fit mode contains the full A4 sheet without horizontal overflow (2.7s)
+  Γ£ô  12 [chromium] ΓÇ║ e2e\ui-regressions.spec.ts:166:7 ΓÇ║ Template preview stage ΓÇ║ the header actions and zoom controls are visible within the viewport (2.8s)
+  Γ£ÿ  10 [chromium] ΓÇ║ e2e\ui-regressions.spec.ts:111:7 ΓÇ║ Create Resume thumbnail ΓÇ║ the preview thumbnail keeps the fixed 900x600 footprint scaled by 0.6 (2.8s)
+  Γ£ô  13 [chromium] ΓÇ║ e2e\ui-regressions.spec.ts:185:7 ΓÇ║ Editor toolbar ΓÇ║ controls share equal heights, consistent gaps, and a back link on the left (3.9s)
+  Γ£ô  14 [chromium] ΓÇ║ e2e\ui-regressions.spec.ts:211:7 ΓÇ║ Editor toolbar ΓÇ║ the saved state shows a small status chip, not an extra button (4.1s)
+  Γ£ô  15 [chromium] ΓÇ║ e2e\ui-regressions.spec.ts:226:7 ΓÇ║ Editor toolbar ΓÇ║ a fresh draft shows the Draft chip, small autosave feedback, and a disabled PDF export (4.3s)
+
+
+  1) [chromium] ΓÇ║ e2e\ui-regressions.spec.ts:111:7 ΓÇ║ Create Resume thumbnail ΓÇ║ the preview thumbnail keeps the fixed 900x600 footprint scaled by 0.6 
+
+    Error: expect(received).toBeLessThanOrEqual(expected)
+
+    Expected: <= 1
+    Received:    28
+
+      134 |       .locator('.preview-frame.thumbnail')
+      135 |       .evaluate((el) => el.scrollWidth - el.clientWidth);
+    > 136 |     expect(overflow).toBeLessThanOrEqual(1);
+          |                      ^
+      137 |   });
+      138 | });
+      139 |
+        at C:\Users\Ruban R\Desktop\keerthi\resume_builder\frontend\e2e\ui-regressions.spec.ts:136:22
+
+    attachment #1: screenshot (image/png) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\ui-regressions-Create-Resu-8d18e-600-footprint-scaled-by-0-6-chromium\test-failed-1.png
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+    Error Context: test-results\ui-regressions-Create-Resu-8d18e-600-footprint-scaled-by-0-6-chromium\error-context.md
+
+  1 failed
+    [chromium] ΓÇ║ e2e\ui-regressions.spec.ts:111:7 ΓÇ║ Create Resume thumbnail ΓÇ║ the preview thumbnail keeps the fixed 900x600 footprint scaled by 0.6 
+  14 passed (1.4m)

@@ -1,0 +1,148 @@
+﻿
+Running 18 tests using 4 workers
+
+  Γ£ô   1 [chromium] ΓÇ║ e2e\preview-controls.spec.ts:42:7 ΓÇ║ Template preview controls ΓÇ║ fit mode produces no horizontal scrollbar in the template preview (15.0s)
+  Γ£ô   3 [chromium] ΓÇ║ e2e\preview-controls.spec.ts:53:7 ΓÇ║ Template preview controls ΓÇ║ fit mode produces no horizontal scrollbar in the editor preview (16.2s)
+  Γ£ÿ   4 [chromium] ΓÇ║ e2e\preview-controls.spec.ts:27:7 ΓÇ║ Template preview controls ΓÇ║ theme changes reset the preview scroll to the top (15.1s)
+  Γ£ô   2 [chromium] ΓÇ║ e2e\preview-controls.spec.ts:69:7 ΓÇ║ Empty editor preview ΓÇ║ a fresh resume shows the helpful empty state, not a blank page (17.1s)
+  Γ£ô   6 [chromium] ΓÇ║ e2e\template-gallery-journey.spec.ts:184:7 ΓÇ║ Template gallery ΓåÆ preview ΓåÆ create ΓåÆ editor journey ΓÇ║ gallery cards show ATS/Visual badges (2.6s)
+  Γ£ô   7 [chromium] ΓÇ║ e2e\ui-regressions.spec.ts:34:7 ΓÇ║ Dashboard tabs: contrast and focus ΓÇ║ active tab uses the navy background with white text and aria-current (1.8s)
+  Γ£ô   9 [chromium] ΓÇ║ e2e\ui-regressions.spec.ts:45:7 ΓÇ║ Dashboard tabs: contrast and focus ΓÇ║ hovering a tab shows the navy background with white text (2.8s)
+  Γ£ô   8 [chromium] ΓÇ║ e2e\template-gallery-journey.spec.ts:204:7 ΓÇ║ Template gallery ΓåÆ preview ΓåÆ create ΓåÆ editor journey ΓÇ║ gallery filtering by category works (4.1s)
+  Γ£ô  11 [chromium] ΓÇ║ e2e\ui-regressions.spec.ts:73:7 ΓÇ║ Dashboard tabs: contrast and focus ΓÇ║ Drafts tab navigates to the drafts list (2.3s)
+  Γ£ÿ  10 [chromium] ΓÇ║ e2e\ui-regressions.spec.ts:56:7 ΓÇ║ Dashboard tabs: contrast and focus ΓÇ║ a focused tab shows a visible outline (2.6s)
+  Γ£ÿ  12 [chromium] ΓÇ║ e2e\ui-regressions.spec.ts:84:7 ΓÇ║ Navigation bar ΓÇ║ the navbar exposes no Drafts item while the dashboard keeps it as a tab (1.6s)
+  Γ£ÿ  13 [chromium] ΓÇ║ e2e\ui-regressions.spec.ts:100:7 ΓÇ║ Create Resume thumbnail ΓÇ║ the preview thumbnail keeps the fixed 900x600 footprint scaled by 0.6 (2.1s)
+  Γ£ô  15 [chromium] ΓÇ║ e2e\ui-regressions.spec.ts:154:7 ΓÇ║ Template preview stage ΓÇ║ the header actions and zoom controls are visible within the viewport (2.2s)
+  Γ£ô   5 [chromium] ΓÇ║ e2e\template-gallery-journey.spec.ts:33:7 ΓÇ║ Template gallery ΓåÆ preview ΓåÆ create ΓåÆ editor journey ΓÇ║ full journey: login ΓåÆ templates ΓåÆ preview Executive Banner ΓåÆ Use ΓåÆ create ΓåÆ editor persists template (14.6s)
+  Γ£ÿ  14 [chromium] ΓÇ║ e2e\ui-regressions.spec.ts:130:7 ΓÇ║ Template preview stage ΓÇ║ fit mode contains the full A4 sheet without horizontal overflow (2.4s)
+  Γ£ô  16 [chromium] ΓÇ║ e2e\ui-regressions.spec.ts:173:7 ΓÇ║ Editor toolbar ΓÇ║ controls share equal heights, consistent gaps, and a back link on the left (4.2s)
+  Γ£ô  17 [chromium] ΓÇ║ e2e\ui-regressions.spec.ts:199:7 ΓÇ║ Editor toolbar ΓÇ║ the saved state shows a small status chip, not an extra button (4.2s)
+  Γ£ô  18 [chromium] ΓÇ║ e2e\ui-regressions.spec.ts:214:7 ΓÇ║ Editor toolbar ΓÇ║ a fresh draft shows the Draft chip, small autosave feedback, and a disabled PDF export (5.1s)
+
+
+  1) [chromium] ΓÇ║ e2e\preview-controls.spec.ts:27:7 ΓÇ║ Template preview controls ΓÇ║ theme changes reset the preview scroll to the top 
+
+    Error: expect(received).toBeGreaterThan(expected)
+
+    Expected: > 0
+    Received:   0
+
+      34 |       el.scrollLeft = 0;
+      35 |     });
+    > 36 |     expect(await stage.evaluate((el) => el.scrollTop)).toBeGreaterThan(0);
+         |                                                        ^
+      37 |
+      38 |     await page.getByRole('button', { name: 'Teal' }).click();
+      39 |     await expect.poll(() => stage.evaluate((el) => el.scrollTop)).toBe(0);
+        at C:\Users\Ruban R\Desktop\keerthi\resume_builder\frontend\e2e\preview-controls.spec.ts:36:56
+
+    attachment #1: screenshot (image/png) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\preview-controls-Template--344b6-e-preview-scroll-to-the-top-chromium\test-failed-1.png
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+    Error Context: test-results\preview-controls-Template--344b6-e-preview-scroll-to-the-top-chromium\error-context.md
+
+  2) [chromium] ΓÇ║ e2e\ui-regressions.spec.ts:56:7 ΓÇ║ Dashboard tabs: contrast and focus ΓÇ║ a focused tab shows a visible outline 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      65 |       color: getComputedStyle(el).outlineColor,
+      66 |     }));
+    > 67 |     expect(focused.visible).toBe(true);
+         |                             ^
+      68 |     expect(focused.style).not.toBe('none');
+      69 |     expect(focused.width).not.toBe('0px');
+      70 |     expect(focused.color).toBe(ACCENT);
+        at C:\Users\Ruban R\Desktop\keerthi\resume_builder\frontend\e2e\ui-regressions.spec.ts:67:29
+
+    attachment #1: screenshot (image/png) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\ui-regressions-Dashboard-t-359ee-tab-shows-a-visible-outline-chromium\test-failed-1.png
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+    Error Context: test-results\ui-regressions-Dashboard-t-359ee-tab-shows-a-visible-outline-chromium\error-context.md
+
+  3) [chromium] ΓÇ║ e2e\ui-regressions.spec.ts:84:7 ΓÇ║ Navigation bar ΓÇ║ the navbar exposes no Drafts item while the dashboard keeps it as a tab 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('link', { name: 'My Resumes' })
+    Expected: visible
+    Error: strict mode violation: getByRole('link', { name: 'My Resumes' }) resolved to 2 elements:
+        1) <a href="/resumes" routerlink="/resumes" _ngcontent-ng-c2690713502="" routerlinkactive="shell-nav__link--active" class="shell-nav__link shell-nav__link--active">My Resumes</a> aka getByLabel('Primary').getByRole('link', { name: 'My Resumes' })
+        2) <a href="/resumes" aria-current="page" routerlink="/resumes" _ngcontent-ng-c2482840266="" class="tabs__tab tabs__tab--active">My Resumes</a> aka getByLabel('Resume lists').getByRole('link', { name: 'My Resumes' })
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for getByRole('link', { name: 'My Resumes' })
+
+
+      87 |     await doLogin(page);
+      88 |
+    > 89 |     await expect(page.getByRole('link', { name: 'My Resumes' })).toBeVisible();
+         |                                                                  ^
+      90 |     await expect(page.getByRole('link', { name: 'Templates' })).toBeVisible();
+      91 |     await expect(page.getByRole('link', { name: 'Job Matcher' })).toBeVisible();
+      92 |     expect(await page.locator('.shell-nav__link', { hasText: 'Drafts' }).count()).toBe(0);
+        at C:\Users\Ruban R\Desktop\keerthi\resume_builder\frontend\e2e\ui-regressions.spec.ts:89:66
+
+    attachment #1: screenshot (image/png) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\ui-regressions-Navigation--30c7a-dashboard-keeps-it-as-a-tab-chromium\test-failed-1.png
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+    Error Context: test-results\ui-regressions-Navigation--30c7a-dashboard-keeps-it-as-a-tab-chromium\error-context.md
+
+  4) [chromium] ΓÇ║ e2e\ui-regressions.spec.ts:100:7 ΓÇ║ Create Resume thumbnail ΓÇ║ the preview thumbnail keeps the fixed 900x600 footprint scaled by 0.6 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "matrix(0.6, 0, 0, 0.6, 0, 0)"
+    Received: "matrix(0.601295, 0, 0, 0.601295, 0, 0)"
+
+      116 |     expect(styles.width).toBe('900px');
+      117 |     expect(styles.height).toBe('600px');
+    > 118 |     expect(styles.transform).toBe('matrix(0.6, 0, 0, 0.6, 0, 0)');
+          |                              ^
+      119 |     expect(styles.transformOrigin).toBe('0px 0px');
+      120 |
+      121 |     // The full A4 page is visible inside the fixed thumbnail viewport.
+        at C:\Users\Ruban R\Desktop\keerthi\resume_builder\frontend\e2e\ui-regressions.spec.ts:118:30
+
+    attachment #1: screenshot (image/png) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\ui-regressions-Create-Resu-8d18e-600-footprint-scaled-by-0-6-chromium\test-failed-1.png
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+    Error Context: test-results\ui-regressions-Create-Resu-8d18e-600-footprint-scaled-by-0-6-chromium\error-context.md
+
+  5) [chromium] ΓÇ║ e2e\ui-regressions.spec.ts:130:7 ΓÇ║ Template preview stage ΓÇ║ fit mode contains the full A4 sheet without horizontal overflow 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 444.59375
+    Received: 442.59375
+
+      148 |     });
+      149 |     expect(metrics.scrollW - metrics.clientW).toBeLessThanOrEqual(1);
+    > 150 |     expect(metrics.canvasW).toBe(metrics.stageW);
+          |                             ^
+      151 |     expect(metrics.canvasH).toBeLessThanOrEqual(metrics.stageH);
+      152 |   });
+      153 |
+        at C:\Users\Ruban R\Desktop\keerthi\resume_builder\frontend\e2e\ui-regressions.spec.ts:150:29
+
+    attachment #1: screenshot (image/png) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\ui-regressions-Template-pr-3f2ec-without-horizontal-overflow-chromium\test-failed-1.png
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+    Error Context: test-results\ui-regressions-Template-pr-3f2ec-without-horizontal-overflow-chromium\error-context.md
+
+  5 failed
+    [chromium] ΓÇ║ e2e\preview-controls.spec.ts:27:7 ΓÇ║ Template preview controls ΓÇ║ theme changes reset the preview scroll to the top 
+    [chromium] ΓÇ║ e2e\ui-regressions.spec.ts:56:7 ΓÇ║ Dashboard tabs: contrast and focus ΓÇ║ a focused tab shows a visible outline 
+    [chromium] ΓÇ║ e2e\ui-regressions.spec.ts:84:7 ΓÇ║ Navigation bar ΓÇ║ the navbar exposes no Drafts item while the dashboard keeps it as a tab 
+    [chromium] ΓÇ║ e2e\ui-regressions.spec.ts:100:7 ΓÇ║ Create Resume thumbnail ΓÇ║ the preview thumbnail keeps the fixed 900x600 footprint scaled by 0.6 
+    [chromium] ΓÇ║ e2e\ui-regressions.spec.ts:130:7 ΓÇ║ Template preview stage ΓÇ║ fit mode contains the full A4 sheet without horizontal overflow 
+  13 passed (2.3m)
