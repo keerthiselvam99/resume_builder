@@ -12,6 +12,7 @@ interface StubResponse extends Response {
 }
 
 type LoginLimiter = (typeof import('../src/middleware/rate-limit'))['loginLimiter'];
+type JobMatchLimiter = (typeof import('../src/middleware/rate-limit'))['jobMatchLimiter'];
 
 function stubRes(): StubResponse {
   return {
@@ -32,7 +33,7 @@ function stubRes(): StubResponse {
 }
 
 async function callLimiter(
-  limiter: LoginLimiter
+  limiter: LoginLimiter | JobMatchLimiter
 ): Promise<{ res: StubResponse; next: ReturnType<typeof vi.fn> }> {
   const req = { ip: '203.0.113.1' } as unknown as Request;
   const res = stubRes();
@@ -57,5 +58,18 @@ describe('authentication rate limiting', () => {
     expect(third.next).not.toHaveBeenCalled();
     expect(third.res.statusCode).toBe(429);
     expect((third.res.body as { error: string }).error).toContain('Too many attempts');
+  });
+});
+
+describe('Job Matcher rate limiting', () => {
+  it('blocks the 31st request with a 429 without exposing request content', async () => {
+    const { jobMatchLimiter } = await import('../src/middleware/rate-limit');
+    for (let attempt = 1; attempt <= 30; attempt += 1) {
+      expect((await callLimiter(jobMatchLimiter)).next).toHaveBeenCalledTimes(1);
+    }
+    const blocked = await callLimiter(jobMatchLimiter);
+    expect(blocked.next).not.toHaveBeenCalled();
+    expect(blocked.res.statusCode).toBe(429);
+    expect(blocked.res.body).toEqual({ error: 'Too many attempts. Please try again later.' });
   });
 });

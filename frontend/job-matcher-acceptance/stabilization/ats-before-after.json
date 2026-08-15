@@ -1,0 +1,524 @@
+{
+  "before": {
+    "startedAt": 1786803134277,
+    "completedAt": 1786803135266,
+    "durationMs": 989,
+    "overall": 62,
+    "experience": "0",
+    "education": "80",
+    "findings": [
+      "No work experience entries are present.",
+      "Several standard resume sections are missing.",
+      "No phone number is listed.",
+      "No location is listed.",
+      "Fewer than three distinct skills are listed.",
+      "The summary has no measurable or concrete detail.",
+      "No education entries are present.",
+      "No profile links are listed."
+    ],
+    "state": {
+      "versionId": "m-msugg8o8-hsqv6q",
+      "cached": {
+        "analysis": {
+          "rulesetVersion": "ats-rules-v1",
+          "overallScore": 62,
+          "categories": [
+            {
+              "key": "contact",
+              "label": "Contact information",
+              "weight": 15,
+              "earnedPoints": 9,
+              "maxPoints": 15,
+              "score": 60
+            },
+            {
+              "key": "summary",
+              "label": "Professional summary",
+              "weight": 10,
+              "earnedPoints": 9,
+              "maxPoints": 10,
+              "score": 90
+            },
+            {
+              "key": "experience",
+              "label": "Work experience",
+              "weight": 20,
+              "earnedPoints": 0,
+              "maxPoints": 20,
+              "score": 0
+            },
+            {
+              "key": "skills",
+              "label": "Skills",
+              "weight": 10,
+              "earnedPoints": 8,
+              "maxPoints": 10,
+              "score": 80
+            },
+            {
+              "key": "education",
+              "label": "Education",
+              "weight": 5,
+              "earnedPoints": 4,
+              "maxPoints": 5,
+              "score": 80
+            },
+            {
+              "key": "structure",
+              "label": "Structure & sections",
+              "weight": 10,
+              "earnedPoints": 3,
+              "maxPoints": 10,
+              "score": 30
+            },
+            {
+              "key": "links",
+              "label": "Links",
+              "weight": 5,
+              "earnedPoints": 4,
+              "maxPoints": 5,
+              "score": 80
+            },
+            {
+              "key": "template",
+              "label": "Template",
+              "weight": 10,
+              "earnedPoints": 10,
+              "maxPoints": 10,
+              "score": 100
+            },
+            {
+              "key": "contentQuality",
+              "label": "Content quality",
+              "weight": 15,
+              "earnedPoints": 15,
+              "maxPoints": 15,
+              "score": 100
+            }
+          ],
+          "findings": [
+            {
+              "code": "contact.phone.missing",
+              "severity": "warning",
+              "category": "contact",
+              "section": "Contact information",
+              "fieldPath": "contacts.phone",
+              "message": "No phone number is listed.",
+              "evidence": {
+                "kind": "missing",
+                "value": "phone"
+              },
+              "suggestion": "Add a phone number with the country code.",
+              "pointsLost": 3
+            },
+            {
+              "code": "contact.location.missing",
+              "severity": "warning",
+              "category": "contact",
+              "section": "Contact information",
+              "fieldPath": "contacts.location",
+              "message": "No location is listed.",
+              "evidence": {
+                "kind": "missing",
+                "value": "location"
+              },
+              "suggestion": "Add your city and country so ATS filters can match your region.",
+              "pointsLost": 3
+            },
+            {
+              "code": "summary.weak",
+              "severity": "info",
+              "category": "summary",
+              "section": "Professional summary",
+              "fieldPath": "summary",
+              "message": "The summary has no measurable or concrete detail.",
+              "evidence": {
+                "kind": "pattern",
+                "value": "Quality engineer focused on accessible deterministic release verification."
+              },
+              "suggestion": "Add a metric such as years of experience or scale of impact.",
+              "pointsLost": 1
+            },
+            {
+              "code": "experience.none",
+              "severity": "error",
+              "category": "experience",
+              "section": "Work experience",
+              "message": "No work experience entries are present.",
+              "evidence": {
+                "kind": "missing",
+                "value": "experience"
+              },
+              "suggestion": "Add at least one role with measurable achievement bullets.",
+              "pointsLost": 20
+            },
+            {
+              "code": "skills.sparse",
+              "severity": "info",
+              "category": "skills",
+              "section": "Skills",
+              "message": "Fewer than three distinct skills are listed.",
+              "evidence": {
+                "kind": "count",
+                "value": 1
+              },
+              "suggestion": "Add more keyword-rich skills relevant to your target role.",
+              "pointsLost": 2
+            },
+            {
+              "code": "education.none",
+              "severity": "info",
+              "category": "education",
+              "section": "Education",
+              "message": "No education entries are present.",
+              "evidence": {
+                "kind": "missing",
+                "value": "education"
+              },
+              "suggestion": "Add your degrees and certifications; many ATS filters screen on education.",
+              "pointsLost": 1
+            },
+            {
+              "code": "structure.sections.sparse",
+              "severity": "error",
+              "category": "structure",
+              "section": "Sections",
+              "message": "Several standard resume sections are missing.",
+              "evidence": {
+                "kind": "missing",
+                "value": "Work experience, Education"
+              },
+              "suggestion": "Add the standard sections recruiters and ATS systems expect.",
+              "pointsLost": 7
+            },
+            {
+              "code": "links.profile.none",
+              "severity": "info",
+              "category": "links",
+              "section": "Links",
+              "message": "No profile links are listed.",
+              "evidence": {
+                "kind": "missing",
+                "value": "LinkedIn, GitHub, Portfolio"
+              },
+              "suggestion": "Add LinkedIn, GitHub or a portfolio URL so recruiters can verify your work.",
+              "pointsLost": 1
+            }
+          ],
+          "summary": {
+            "errors": 2,
+            "warnings": 2,
+            "info": 4
+          },
+          "versionId": "m-msugg8o8-hsqv6q"
+        },
+        "signature": "t-classic-ats-navy|{\"contacts\":{\"fullName\":\"Release Test User\",\"title\":\"\",\"email\":\"release.test@example.com\",\"phone\":\"\",\"location\":\"\",\"linkedinUrl\":\"\",\"githubUrl\":\"\",\"portfolioUrl\":\"\"},\"summary\":\"Quality engineer focused on accessible deterministic release verification.\",\"skills\":[\"Angular\"],\"experiences\":[],\"projects\":[],\"education\":[],\"certifications\":[],\"achievements\":[],\"awards\":[],\"languages\":[],\"customSections\":[]}"
+      },
+      "version": {
+        "id": "m-msugg8o8-hsqv6q",
+        "resumeId": "m-msugg8o8-g0072v",
+        "name": "Master Resume",
+        "published": false,
+        "isMaster": true,
+        "isTailored": false,
+        "templateId": "t-classic-ats-navy",
+        "createdAt": "2026-08-15T14:12:12.391Z",
+        "updatedAt": "2026-08-15T14:12:14.340Z",
+        "content": {
+          "contacts": {
+            "fullName": "Release Test User",
+            "title": "",
+            "email": "release.test@example.com",
+            "phone": "",
+            "location": "",
+            "linkedinUrl": "",
+            "githubUrl": "",
+            "portfolioUrl": ""
+          },
+          "summary": "Quality engineer focused on accessible deterministic release verification.",
+          "skills": [
+            "Angular"
+          ],
+          "experiences": [],
+          "projects": [],
+          "education": [],
+          "certifications": [],
+          "achievements": [],
+          "awards": [],
+          "languages": [],
+          "customSections": []
+        }
+      },
+      "persistedSignature": "t-classic-ats-navy|{\"contacts\":{\"fullName\":\"Release Test User\",\"title\":\"\",\"email\":\"release.test@example.com\",\"phone\":\"\",\"location\":\"\",\"linkedinUrl\":\"\",\"githubUrl\":\"\",\"portfolioUrl\":\"\"},\"summary\":\"Quality engineer focused on accessible deterministic release verification.\",\"skills\":[\"Angular\"],\"experiences\":[],\"projects\":[],\"education\":[],\"certifications\":[],\"achievements\":[],\"awards\":[],\"languages\":[],\"customSections\":[]}"
+    }
+  },
+  "after": {
+    "startedAt": 1786803138938,
+    "completedAt": 1786803140000,
+    "durationMs": 1062,
+    "overall": 90,
+    "experience": "100",
+    "education": "100",
+    "findings": [
+      "No phone number is listed.",
+      "No location is listed.",
+      "Fewer than three distinct skills are listed.",
+      "The summary has no measurable or concrete detail.",
+      "No profile links are listed."
+    ],
+    "state": {
+      "versionId": "m-msugg8o8-hsqv6q",
+      "cached": {
+        "analysis": {
+          "rulesetVersion": "ats-rules-v1",
+          "overallScore": 90,
+          "categories": [
+            {
+              "key": "contact",
+              "label": "Contact information",
+              "weight": 15,
+              "earnedPoints": 9,
+              "maxPoints": 15,
+              "score": 60
+            },
+            {
+              "key": "summary",
+              "label": "Professional summary",
+              "weight": 10,
+              "earnedPoints": 9,
+              "maxPoints": 10,
+              "score": 90
+            },
+            {
+              "key": "experience",
+              "label": "Work experience",
+              "weight": 20,
+              "earnedPoints": 20,
+              "maxPoints": 20,
+              "score": 100
+            },
+            {
+              "key": "skills",
+              "label": "Skills",
+              "weight": 10,
+              "earnedPoints": 8,
+              "maxPoints": 10,
+              "score": 80
+            },
+            {
+              "key": "education",
+              "label": "Education",
+              "weight": 5,
+              "earnedPoints": 5,
+              "maxPoints": 5,
+              "score": 100
+            },
+            {
+              "key": "structure",
+              "label": "Structure & sections",
+              "weight": 10,
+              "earnedPoints": 10,
+              "maxPoints": 10,
+              "score": 100
+            },
+            {
+              "key": "links",
+              "label": "Links",
+              "weight": 5,
+              "earnedPoints": 4,
+              "maxPoints": 5,
+              "score": 80
+            },
+            {
+              "key": "template",
+              "label": "Template",
+              "weight": 10,
+              "earnedPoints": 10,
+              "maxPoints": 10,
+              "score": 100
+            },
+            {
+              "key": "contentQuality",
+              "label": "Content quality",
+              "weight": 15,
+              "earnedPoints": 15,
+              "maxPoints": 15,
+              "score": 100
+            }
+          ],
+          "findings": [
+            {
+              "code": "contact.phone.missing",
+              "severity": "warning",
+              "category": "contact",
+              "section": "Contact information",
+              "fieldPath": "contacts.phone",
+              "message": "No phone number is listed.",
+              "evidence": {
+                "kind": "missing",
+                "value": "phone"
+              },
+              "suggestion": "Add a phone number with the country code.",
+              "pointsLost": 3
+            },
+            {
+              "code": "contact.location.missing",
+              "severity": "warning",
+              "category": "contact",
+              "section": "Contact information",
+              "fieldPath": "contacts.location",
+              "message": "No location is listed.",
+              "evidence": {
+                "kind": "missing",
+                "value": "location"
+              },
+              "suggestion": "Add your city and country so ATS filters can match your region.",
+              "pointsLost": 3
+            },
+            {
+              "code": "summary.weak",
+              "severity": "info",
+              "category": "summary",
+              "section": "Professional summary",
+              "fieldPath": "summary",
+              "message": "The summary has no measurable or concrete detail.",
+              "evidence": {
+                "kind": "pattern",
+                "value": "Quality engineer focused on accessible deterministic release verification."
+              },
+              "suggestion": "Add a metric such as years of experience or scale of impact.",
+              "pointsLost": 1
+            },
+            {
+              "code": "skills.sparse",
+              "severity": "info",
+              "category": "skills",
+              "section": "Skills",
+              "message": "Fewer than three distinct skills are listed.",
+              "evidence": {
+                "kind": "count",
+                "value": 1
+              },
+              "suggestion": "Add more keyword-rich skills relevant to your target role.",
+              "pointsLost": 2
+            },
+            {
+              "code": "links.profile.none",
+              "severity": "info",
+              "category": "links",
+              "section": "Links",
+              "message": "No profile links are listed.",
+              "evidence": {
+                "kind": "missing",
+                "value": "LinkedIn, GitHub, Portfolio"
+              },
+              "suggestion": "Add LinkedIn, GitHub or a portfolio URL so recruiters can verify your work.",
+              "pointsLost": 1
+            }
+          ],
+          "summary": {
+            "errors": 0,
+            "warnings": 2,
+            "info": 3
+          },
+          "versionId": "m-msugg8o8-hsqv6q"
+        },
+        "signature": "t-classic-ats-navy|{\"contacts\":{\"fullName\":\"Release Test User\",\"title\":\"\",\"email\":\"release.test@example.com\",\"phone\":\"\",\"location\":\"\",\"linkedinUrl\":\"\",\"githubUrl\":\"\",\"portfolioUrl\":\"\"},\"summary\":\"Quality engineer focused on accessible deterministic release verification.\",\"skills\":[\"Angular\"],\"experiences\":[{\"id\":\"d5a4a250-b92b-488b-9d0e-876f95d8fad4\",\"company\":\"Gate Labs\",\"role\":\"Release Engineer\",\"location\":\"\",\"startDate\":\"2021-01\",\"endDate\":\"2024-12\",\"current\":false,\"bullets\":[\"Built 24 deterministic browser release gates and reduced escaped defects by 35%.\",\"Reduced regression triage time by 40% with zero-retry checks across 18 workflows.\"]}],\"projects\":[{\"id\":\"e3fe04b3-ab5f-4d3e-9476-df9835371399\",\"name\":\"Evidence Console\",\"role\":\"\",\"description\":\"A release evidence application\",\"technologies\":\"\",\"link\":\"\",\"startDate\":\"\",\"endDate\":\"\",\"bullets\":[\"Captured current resume evidence\",\"Verified exported PDF content\"]}],\"education\":[{\"id\":\"10d24dcd-259e-4193-aa67-b29ab3855d08\",\"institution\":\"Quality University\",\"degree\":\"BSc Software Quality\",\"field\":\"\",\"startDate\":\"2020-01\",\"endDate\":\"2024-05\",\"gpa\":\"\"}],\"certifications\":[{\"id\":\"66ae4988-e44e-4a65-95fe-3cab26aeeb5d\",\"name\":\"Certified Release Professional\",\"issuer\":\"Test Standards Board\",\"issueDate\":\"\",\"doesNotExpire\":false,\"expiryDate\":\"\",\"credentialId\":\"\",\"credentialUrl\":\"\"}],\"achievements\":[],\"awards\":[{\"id\":\"d52c9836-dab9-4a2e-8cdf-625fa2fc46b0\",\"title\":\"Zero Retry Award\",\"issuer\":\"Quality Council\",\"date\":\"\",\"description\":\"\"}],\"languages\":[],\"customSections\":[]}"
+      },
+      "version": {
+        "id": "m-msugg8o8-hsqv6q",
+        "resumeId": "m-msugg8o8-g0072v",
+        "name": "Master Resume",
+        "published": false,
+        "isMaster": true,
+        "isTailored": false,
+        "templateId": "t-classic-ats-navy",
+        "createdAt": "2026-08-15T14:12:12.391Z",
+        "updatedAt": "2026-08-15T14:12:18.980Z",
+        "content": {
+          "contacts": {
+            "fullName": "Release Test User",
+            "title": "",
+            "email": "release.test@example.com",
+            "phone": "",
+            "location": "",
+            "linkedinUrl": "",
+            "githubUrl": "",
+            "portfolioUrl": ""
+          },
+          "summary": "Quality engineer focused on accessible deterministic release verification.",
+          "skills": [
+            "Angular"
+          ],
+          "experiences": [
+            {
+              "id": "d5a4a250-b92b-488b-9d0e-876f95d8fad4",
+              "company": "Gate Labs",
+              "role": "Release Engineer",
+              "location": "",
+              "startDate": "2021-01",
+              "endDate": "2024-12",
+              "current": false,
+              "bullets": [
+                "Built 24 deterministic browser release gates and reduced escaped defects by 35%.",
+                "Reduced regression triage time by 40% with zero-retry checks across 18 workflows."
+              ]
+            }
+          ],
+          "projects": [
+            {
+              "id": "e3fe04b3-ab5f-4d3e-9476-df9835371399",
+              "name": "Evidence Console",
+              "role": "",
+              "description": "A release evidence application",
+              "technologies": "",
+              "link": "",
+              "startDate": "",
+              "endDate": "",
+              "bullets": [
+                "Captured current resume evidence",
+                "Verified exported PDF content"
+              ]
+            }
+          ],
+          "education": [
+            {
+              "id": "10d24dcd-259e-4193-aa67-b29ab3855d08",
+              "institution": "Quality University",
+              "degree": "BSc Software Quality",
+              "field": "",
+              "startDate": "2020-01",
+              "endDate": "2024-05",
+              "gpa": ""
+            }
+          ],
+          "certifications": [
+            {
+              "id": "66ae4988-e44e-4a65-95fe-3cab26aeeb5d",
+              "name": "Certified Release Professional",
+              "issuer": "Test Standards Board",
+              "issueDate": "",
+              "doesNotExpire": false,
+              "expiryDate": "",
+              "credentialId": "",
+              "credentialUrl": ""
+            }
+          ],
+          "achievements": [],
+          "awards": [
+            {
+              "id": "d52c9836-dab9-4a2e-8cdf-625fa2fc46b0",
+              "title": "Zero Retry Award",
+              "issuer": "Quality Council",
+              "date": "",
+              "description": ""
+            }
+          ],
+          "languages": [],
+          "customSections": []
+        }
+      },
+      "persistedSignature": "t-classic-ats-navy|{\"contacts\":{\"fullName\":\"Release Test User\",\"title\":\"\",\"email\":\"release.test@example.com\",\"phone\":\"\",\"location\":\"\",\"linkedinUrl\":\"\",\"githubUrl\":\"\",\"portfolioUrl\":\"\"},\"summary\":\"Quality engineer focused on accessible deterministic release verification.\",\"skills\":[\"Angular\"],\"experiences\":[{\"id\":\"d5a4a250-b92b-488b-9d0e-876f95d8fad4\",\"company\":\"Gate Labs\",\"role\":\"Release Engineer\",\"location\":\"\",\"startDate\":\"2021-01\",\"endDate\":\"2024-12\",\"current\":false,\"bullets\":[\"Built 24 deterministic browser release gates and reduced escaped defects by 35%.\",\"Reduced regression triage time by 40% with zero-retry checks across 18 workflows.\"]}],\"projects\":[{\"id\":\"e3fe04b3-ab5f-4d3e-9476-df9835371399\",\"name\":\"Evidence Console\",\"role\":\"\",\"description\":\"A release evidence application\",\"technologies\":\"\",\"link\":\"\",\"startDate\":\"\",\"endDate\":\"\",\"bullets\":[\"Captured current resume evidence\",\"Verified exported PDF content\"]}],\"education\":[{\"id\":\"10d24dcd-259e-4193-aa67-b29ab3855d08\",\"institution\":\"Quality University\",\"degree\":\"BSc Software Quality\",\"field\":\"\",\"startDate\":\"2020-01\",\"endDate\":\"2024-05\",\"gpa\":\"\"}],\"certifications\":[{\"id\":\"66ae4988-e44e-4a65-95fe-3cab26aeeb5d\",\"name\":\"Certified Release Professional\",\"issuer\":\"Test Standards Board\",\"issueDate\":\"\",\"doesNotExpire\":false,\"expiryDate\":\"\",\"credentialId\":\"\",\"credentialUrl\":\"\"}],\"achievements\":[],\"awards\":[{\"id\":\"d52c9836-dab9-4a2e-8cdf-625fa2fc46b0\",\"title\":\"Zero Retry Award\",\"issuer\":\"Quality Council\",\"date\":\"\",\"description\":\"\"}],\"languages\":[],\"customSections\":[]}"
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "status": "passed",
+  "branch": "feature/job-matcher",
+  "jobMatcher": {
+    "targetedRuns": "3/3",
+    "originalScore": 39,
+    "correctedScores": { "strong": 81, "partial": 46, "weak": 5 },
+    "engineTests": "9/9",
+    "apiTests": "5/5"
+  },
+  "ats": {
+    "targetedRuns": "5/5",
+    "beforeScore": 62,
+    "afterScore": 90,
+    "currentContentSignatureVerified": true
+  },
+  "a4": {
+    "targetedDesktopRuns": "5/5",
+    "targetedAllAffectedPaths": "15/15",
+    "initialFailingOverflowPx": 38,
+    "settledOverflowPx": 0,
+    "rootCause": "Assertions sampled the preview before asynchronous Fit scaling stabilized.",
+    "productionCssChanged": false
+  },
+  "frontend": {
+    "format": "passed",
+    "lint": "passed",
+    "build": "passed",
+    "tests": "336/336"
+  },
+  "backend": {
+    "format": "passed",
+    "lint": "passed",
+    "build": "passed",
+    "catalogue": "100/100",
+    "tests": "181 passed, 1 live-Oracle test deferred"
+  },
+  "playwright": { "tests": "81/81", "workers": 1, "retries": 0 },
+  "visualBaselinesChanged": false,
+  "tagV1_0_0Rc2Unchanged": true,
+  "credentialAudit": "No non-test credentials found in the focused change set."
+}

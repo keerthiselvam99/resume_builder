@@ -1,0 +1,17 @@
+{
+  "initialFailingObservation": {
+    "stageOverflowPx": 38,
+    "canvasWidthPx": 535.921875,
+    "fitTransform": "matrix(0.723047, 0, 0, 0.723047, 0, 0)"
+  },
+  "settledObservation": {
+    "stageOverflowPx": 0,
+    "canvasWidthPx": 535.921875,
+    "fitTransform": "matrix(0.674978, 0, 0, 0.674978, 0, 0)",
+    "iframeDocumentClientWidthPx": 794,
+    "iframeDocumentScrollWidthPx": 794
+  },
+  "diagnosis": "The failing assertion ran after iframe attachment but before the Fit transform converged. Waiting for fonts, pagination, Fit containment and stable dimensions removes the overflow.",
+  "correction": "Use the shared stable-preview readiness helper in every affected A4 assertion.",
+  "uiOrCssChangeRequired": false
+}
