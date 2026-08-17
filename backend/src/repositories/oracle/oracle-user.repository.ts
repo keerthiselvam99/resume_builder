@@ -1,7 +1,7 @@
 import oracledb from 'oracledb';
-import { ConflictError } from '../../http/errors';
+import { ConflictError, ForbiddenError, NotFoundError } from '../../http/errors';
 import { UserRecord } from '../../types/domain';
-import { CreateUserInput, UserRepository } from '../interfaces';
+import { AdminUserQuery, CreateUserInput, PageResult, UserRepository } from '../interfaces';
 import { isDuplicateKey, TS_MASK, withConnection } from './common';
 
 interface UserRow {
@@ -12,6 +12,15 @@ interface UserRow {
   ROLE_CODE: string;
   CREATED_AT: string;
   UPDATED_AT: string;
+  STATUS_CODE: string;
+}
+
+interface AdminCountRow {
+  TOTAL: number;
+  ACTIVE: number | null;
+  DISABLED: number | null;
+  USERS: number | null;
+  ADMINS: number | null;
 }
 
 export class OracleUserRepository implements UserRepository {
@@ -53,6 +62,7 @@ export class OracleUserRepository implements UserRepository {
         email,
         passwordHash: input.passwordHash,
         role: input.role,
+        status: 'active',
         createdAt,
         updatedAt: createdAt,
       };
@@ -71,7 +81,7 @@ export class OracleUserRepository implements UserRepository {
     return withConnection(async (conn) => {
       const result = await conn.execute<UserRow>(
         `SELECT u.id, u.name, u.email, u.password_hash,
-                r.code AS role_code,
+                r.code AS role_code, u.status_code,
                 TO_CHAR(u.created_at, '${TS_MASK}') AS created_at,
                 TO_CHAR(u.updated_at, '${TS_MASK}') AS updated_at
          FROM app_users u
@@ -85,12 +95,165 @@ export class OracleUserRepository implements UserRepository {
     });
   }
 
+  async listPage(query: AdminUserQuery): Promise<PageResult<UserRecord>> {
+    const columns = {
+      name: 'u.name',
+      email: 'u.email',
+      createdAt: 'u.created_at',
+      updatedAt: 'u.updated_at',
+    } as const;
+    const where = [
+      `(:q IS NULL OR LOWER(u.name) LIKE :needle OR LOWER(u.email) LIKE :needle)`,
+      `(:role IS NULL OR r.code = :role)`,
+      `(:status IS NULL OR u.status_code = :status)`,
+    ];
+    const binds = {
+      q: query.q ?? null,
+      needle: query.q ? `%${query.q.trim().toLowerCase()}%` : null,
+      role: query.role ?? null,
+      status: query.status ?? null,
+    };
+    return withConnection(async (conn) => {
+      const count = await conn.execute<{ TOTAL: number }>(
+        `SELECT COUNT(*) total FROM app_users u JOIN user_roles ur ON ur.user_id=u.id JOIN roles r ON r.id=ur.role_id WHERE ${where.join(' AND ')}`,
+        binds,
+        { outFormat: oracledb.OUT_FORMAT_OBJECT }
+      );
+      const offset = (query.page - 1) * query.pageSize;
+      const result = await conn.execute<UserRow>(
+        `SELECT u.id,u.name,u.email,u.password_hash,r.code role_code,u.status_code,TO_CHAR(u.created_at,'${TS_MASK}') created_at,TO_CHAR(u.updated_at,'${TS_MASK}') updated_at FROM app_users u JOIN user_roles ur ON ur.user_id=u.id JOIN roles r ON r.id=ur.role_id WHERE ${where.join(' AND ')} ORDER BY ${columns[query.sort]} ${query.direction.toUpperCase()}, u.id ${query.direction.toUpperCase()} OFFSET :offset ROWS FETCH NEXT :pageSize ROWS ONLY`,
+        { ...binds, offset, pageSize: query.pageSize },
+        { outFormat: oracledb.OUT_FORMAT_OBJECT }
+      );
+      return {
+        items: (result.rows ?? []).map(mapUserRow),
+        total: Number(count.rows?.[0]?.TOTAL ?? 0),
+        page: query.page,
+        pageSize: query.pageSize,
+      };
+    });
+  }
+  async countActiveAdmins(): Promise<number> {
+    return withConnection(async (conn) => {
+      const result = await conn.execute<{ TOTAL: number }>(
+        `SELECT COUNT(*) total
+         FROM app_users u
+         JOIN user_roles ur ON ur.user_id = u.id
+         JOIN roles r ON r.id = ur.role_id
+         WHERE r.code = 'admin' AND u.status_code = 'active'`,
+        [],
+        { outFormat: oracledb.OUT_FORMAT_OBJECT }
+      );
+      return Number(result.rows?.[0]?.TOTAL ?? 0);
+    });
+  }
+
+  async adminCounts() {
+    return withConnection(async (conn) => {
+      const result = await conn.execute<AdminCountRow>(
+        `SELECT COUNT(*) total,
+                SUM(CASE WHEN u.status_code = 'active' THEN 1 ELSE 0 END) active,
+                SUM(CASE WHEN u.status_code = 'disabled' THEN 1 ELSE 0 END) disabled,
+                SUM(CASE WHEN r.code = 'user' THEN 1 ELSE 0 END) users,
+                SUM(CASE WHEN r.code = 'admin' THEN 1 ELSE 0 END) admins
+         FROM app_users u
+         JOIN user_roles ur ON ur.user_id = u.id
+         JOIN roles r ON r.id = ur.role_id`,
+        [],
+        { outFormat: oracledb.OUT_FORMAT_OBJECT }
+      );
+      const row = result.rows?.[0];
+      return {
+        total: Number(row?.TOTAL ?? 0),
+        active: Number(row?.ACTIVE ?? 0),
+        disabled: Number(row?.DISABLED ?? 0),
+        users: Number(row?.USERS ?? 0),
+        admins: Number(row?.ADMINS ?? 0),
+      };
+    });
+  }
+  async updateRoleAtomic(
+    actorId: string,
+    userId: string,
+    role: UserRecord['role']
+  ): Promise<UserRecord> {
+    const user = await this.findById(userId);
+    if (!user) throw new NotFoundError('User not found.');
+    if (actorId === userId && role === 'user')
+      throw new ForbiddenError('Administrators cannot demote themselves.');
+    if (
+      user.role === 'admin' &&
+      role === 'user' &&
+      user.status === 'active' &&
+      (await this.countActiveAdmins()) <= 1
+    )
+      throw new ForbiddenError('The last active administrator cannot be demoted.');
+    await withConnection(async (conn) => {
+      await conn.execute(`SELECT id FROM roles WHERE code = 'admin' FOR UPDATE`);
+      if (user.role === 'admin' && user.status === 'active' && role === 'user') {
+        const count = await conn.execute<{ TOTAL: number }>(
+          `SELECT COUNT(*) total FROM app_users u JOIN user_roles ur ON ur.user_id=u.id JOIN roles r ON r.id=ur.role_id WHERE r.code='admin' AND u.status_code='active'`,
+          [],
+          { outFormat: oracledb.OUT_FORMAT_OBJECT }
+        );
+        if (Number(count.rows?.[0]?.TOTAL ?? 0) <= 1)
+          throw new ForbiddenError('The last active administrator cannot be demoted.');
+      }
+      await conn.execute(
+        `DELETE FROM user_roles WHERE user_id = :userId`,
+        { userId },
+        { autoCommit: false }
+      );
+      await conn.execute(
+        `INSERT INTO user_roles (user_id, role_id) SELECT :userId, id FROM roles WHERE code = :role`,
+        { userId, role },
+        { autoCommit: true }
+      );
+    });
+    return (await this.findById(userId))!;
+  }
+  async updateStatusAtomic(
+    actorId: string,
+    userId: string,
+    status: UserRecord['status']
+  ): Promise<UserRecord> {
+    const user = await this.findById(userId);
+    if (!user) throw new NotFoundError('User not found.');
+    if (actorId === userId && status === 'disabled')
+      throw new ForbiddenError('Administrators cannot disable themselves.');
+    if (
+      user.role === 'admin' &&
+      user.status === 'active' &&
+      status === 'disabled' &&
+      (await this.countActiveAdmins()) <= 1
+    )
+      throw new ForbiddenError('The last active administrator cannot be disabled.');
+    await withConnection(async (conn) => {
+      await conn.execute(`SELECT id FROM roles WHERE code = 'admin' FOR UPDATE`);
+      if (user.role === 'admin' && user.status === 'active' && status === 'disabled') {
+        const count = await conn.execute<{ TOTAL: number }>(
+          `SELECT COUNT(*) total FROM app_users u JOIN user_roles ur ON ur.user_id=u.id JOIN roles r ON r.id=ur.role_id WHERE r.code='admin' AND u.status_code='active'`,
+          [],
+          { outFormat: oracledb.OUT_FORMAT_OBJECT }
+        );
+        if (Number(count.rows?.[0]?.TOTAL ?? 0) <= 1)
+          throw new ForbiddenError('The last active administrator cannot be disabled.');
+      }
+      await conn.execute(
+        `UPDATE app_users SET status_code = :status WHERE id = :userId`,
+        { status, userId },
+        { autoCommit: true }
+      );
+    });
+    return (await this.findById(userId))!;
+  }
+
   private async findBy(column: 'id' | 'email', value: string): Promise<UserRecord | null> {
     return withConnection(async (conn) => {
       const where = column === 'email' ? 'u.email = :value' : 'u.id = :value';
       const result = await conn.execute<UserRow>(
         `SELECT u.id, u.name, u.email, u.password_hash,
-                r.code AS role_code,
+                r.code AS role_code, u.status_code,
                 TO_CHAR(u.created_at, '${TS_MASK}') AS created_at,
                 TO_CHAR(u.updated_at, '${TS_MASK}') AS updated_at
          FROM app_users u
@@ -113,6 +276,7 @@ function mapUserRow(row: UserRow): UserRecord {
     email: row.EMAIL,
     passwordHash: row.PASSWORD_HASH,
     role: row.ROLE_CODE === 'admin' ? 'admin' : 'user',
+    status: row.STATUS_CODE === 'disabled' ? 'disabled' : 'active',
     createdAt: row.CREATED_AT,
     updatedAt: row.UPDATED_AT,
   };

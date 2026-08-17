@@ -50,12 +50,14 @@ export class MemoryStore {
     this.resumes.clear();
     this.versions.clear();
     for (const user of data.users) {
+      user.status ??= 'active';
       this.users.set(user.id, user);
     }
     for (const token of data.refreshTokens) {
       this.refreshTokens.set(token.id, token);
     }
     for (const event of data.auditEvents) {
+      event.targetUserId ??= null;
       this.auditEvents.push(event);
     }
     for (const resume of data.resumes) {

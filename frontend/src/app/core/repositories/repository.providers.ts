@@ -22,6 +22,9 @@ import { HttpPdfExportRepository } from './http/http-pdf-export.repository';
 import { JobMatchRepository } from './job-match.repository';
 import { HttpJobMatchRepository } from './http/http-job-match.repository';
 import { MockJobMatchRepository } from './mock/mock-job-match.repository';
+import { AdminRepository } from './admin.repository';
+import { HttpAdminRepository } from './http/http-admin.repository';
+import { MockAdminRepository } from './mock/mock-admin.repository';
 
 export const AUTH_REPOSITORY = new InjectionToken<AuthRepository>('AuthRepository');
 export const RESUME_REPOSITORY = new InjectionToken<ResumeRepository>('ResumeRepository');
@@ -32,6 +35,7 @@ export const SUGGESTION_REPOSITORY = new InjectionToken<SuggestionRepository>(
 );
 export const PDF_EXPORT_REPOSITORY = new InjectionToken<PdfExportRepository>('PdfExportRepository');
 export const JOB_MATCH_REPOSITORY = new InjectionToken<JobMatchRepository>('JobMatchRepository');
+export const ADMIN_REPOSITORY = new InjectionToken<AdminRepository>('AdminRepository');
 
 /**
  * True when the app runs against localStorage-backed repositories (the default
@@ -62,6 +66,12 @@ if (environment.production && environment.useMockApi) {
  * on 401 (the refresh token is an httpOnly cookie, never visible to JS).
  */
 export const repositoryProviders: Provider[] = [
+  {
+    provide: ADMIN_REPOSITORY,
+    deps: [HTTP_API_CLIENT],
+    useFactory: (client: HttpApiClient) =>
+      environment.useMockApi ? new MockAdminRepository() : new HttpAdminRepository(client),
+  },
   {
     provide: HTTP_AUTH_SESSION,
     useFactory: () => new HttpAuthSession(),

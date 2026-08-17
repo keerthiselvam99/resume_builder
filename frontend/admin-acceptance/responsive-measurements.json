@@ -1,0 +1,166 @@
+[
+  {
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "scrollWidth": 1440,
+    "clientWidth": 1440,
+    "overflow": false,
+    "widest": [
+      {
+        "tag": "HTML",
+        "className": "",
+        "right": 1440,
+        "width": 1440
+      },
+      {
+        "tag": "BODY",
+        "className": "",
+        "right": 1440,
+        "width": 1440
+      },
+      {
+        "tag": "APP-ROOT",
+        "className": "",
+        "right": 1440,
+        "width": 1440
+      },
+      {
+        "tag": "APP-SHELL",
+        "className": "",
+        "right": 1440,
+        "width": 1440
+      },
+      {
+        "tag": "HEADER",
+        "className": "shell-header",
+        "right": 1440,
+        "width": 1440
+      }
+    ]
+  },
+  {
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    },
+    "scrollWidth": 1280,
+    "clientWidth": 1280,
+    "overflow": false,
+    "widest": [
+      {
+        "tag": "HTML",
+        "className": "",
+        "right": 1280,
+        "width": 1280
+      },
+      {
+        "tag": "BODY",
+        "className": "",
+        "right": 1280,
+        "width": 1280
+      },
+      {
+        "tag": "APP-ROOT",
+        "className": "",
+        "right": 1280,
+        "width": 1280
+      },
+      {
+        "tag": "APP-SHELL",
+        "className": "",
+        "right": 1280,
+        "width": 1280
+      },
+      {
+        "tag": "HEADER",
+        "className": "shell-header",
+        "right": 1280,
+        "width": 1280
+      }
+    ]
+  },
+  {
+    "viewport": {
+      "width": 768,
+      "height": 1024
+    },
+    "scrollWidth": 768,
+    "clientWidth": 768,
+    "overflow": false,
+    "widest": [
+      {
+        "tag": "TABLE",
+        "className": "",
+        "right": 883,
+        "width": 850
+      },
+      {
+        "tag": "THEAD",
+        "className": "",
+        "right": 883,
+        "width": 850
+      },
+      {
+        "tag": "TR",
+        "className": "",
+        "right": 883,
+        "width": 850
+      },
+      {
+        "tag": "TH",
+        "className": "",
+        "right": 883,
+        "width": 203.078125
+      },
+      {
+        "tag": "TBODY",
+        "className": "",
+        "right": 883,
+        "width": 850
+      }
+    ]
+  },
+  {
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "scrollWidth": 390,
+    "clientWidth": 390,
+    "overflow": false,
+    "widest": [
+      {
+        "tag": "HTML",
+        "className": "",
+        "right": 390,
+        "width": 390
+      },
+      {
+        "tag": "BODY",
+        "className": "",
+        "right": 390,
+        "width": 390
+      },
+      {
+        "tag": "APP-ROOT",
+        "className": "",
+        "right": 390,
+        "width": 390
+      },
+      {
+        "tag": "APP-SHELL",
+        "className": "",
+        "right": 390,
+        "width": 390
+      },
+      {
+        "tag": "HEADER",
+        "className": "shell-header",
+        "right": 390,
+        "width": 390
+      }
+    ]
+  }
+]

@@ -35,6 +35,12 @@ interface VersionRow {
   UPDATED_AT: string;
 }
 
+interface AdminResumeCountRow {
+  TOTAL: number;
+  SAVED: number | null;
+  DRAFTS: number | null;
+}
+
 const RESUME_COLUMNS = `id, user_id, name, is_primary, status,
        TO_CHAR(created_at, '${TS_MASK}') AS created_at,
        TO_CHAR(updated_at, '${TS_MASK}') AS updated_at`;
@@ -45,6 +51,21 @@ const VERSION_COLUMNS = `id, resume_id, name, published, is_master, is_tailored,
        TO_CHAR(updated_at, '${TS_MASK}') AS updated_at`;
 
 export class OracleResumeRepository implements ResumeRepository {
+  async adminCounts(): Promise<{ total: number; saved: number; drafts: number }> {
+    return withConnection(async (conn) => {
+      const result = await conn.execute<AdminResumeCountRow>(
+        `SELECT COUNT(*) total, SUM(CASE WHEN status = 'saved' THEN 1 ELSE 0 END) saved, SUM(CASE WHEN status = 'draft' THEN 1 ELSE 0 END) drafts FROM resumes`,
+        [],
+        { outFormat: oracledb.OUT_FORMAT_OBJECT }
+      );
+      const row = result.rows?.[0];
+      return {
+        total: Number(row?.TOTAL ?? 0),
+        saved: Number(row?.SAVED ?? 0),
+        drafts: Number(row?.DRAFTS ?? 0),
+      };
+    });
+  }
   async listForUser(userId: string): Promise<Resume[]> {
     return withConnection(async (conn) => {
       const result = await conn.execute<ResumeRow>(

@@ -5,6 +5,9 @@ import {
   ResumeVersion,
   User,
   UserRecord,
+  AuditEvent,
+  UserRole,
+  UserStatus,
 } from '../types/domain';
 
 export interface CreateUserInput {
@@ -20,6 +23,42 @@ export interface UserRepository {
   findByEmail(email: string): Promise<UserRecord | null>;
   findById(id: string): Promise<UserRecord | null>;
   list(): Promise<UserRecord[]>;
+  listPage(query: AdminUserQuery): Promise<PageResult<UserRecord>>;
+  adminCounts(): Promise<{
+    total: number;
+    active: number;
+    disabled: number;
+    users: number;
+    admins: number;
+  }>;
+  countActiveAdmins(): Promise<number>;
+  updateRoleAtomic(actorId: string, userId: string, role: UserRole): Promise<UserRecord>;
+  updateStatusAtomic(actorId: string, userId: string, status: UserStatus): Promise<UserRecord>;
+}
+
+export interface PageResult<T> {
+  items: T[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
+export interface AdminUserQuery {
+  page: number;
+  pageSize: number;
+  q?: string;
+  role?: UserRole;
+  status?: UserStatus;
+  sort: 'name' | 'email' | 'createdAt' | 'updatedAt';
+  direction: 'asc' | 'desc';
+}
+export interface AuditQuery {
+  page: number;
+  pageSize: number;
+  action?: string;
+  actorUserId?: string;
+  targetUserId?: string;
+  from?: string;
+  to?: string;
 }
 
 export interface CreateRefreshTokenInput {
@@ -43,8 +82,10 @@ export interface AuditRepository {
     actorUserId: string | null;
     action: string;
     details?: string | null;
+    targetUserId?: string | null;
     ipAddress?: string | null;
   }): Promise<void>;
+  listPage(query: AuditQuery): Promise<PageResult<AuditEvent>>;
 }
 
 export interface CreateResumeInput {
@@ -63,6 +104,7 @@ export interface CreateVersionInput {
 }
 
 export interface ResumeRepository {
+  adminCounts(): Promise<{ total: number; saved: number; drafts: number }>;
   listForUser(userId: string): Promise<Resume[]>;
   getForUser(userId: string, resumeId: string): Promise<Resume | null>;
   create(input: CreateResumeInput): Promise<Resume>;

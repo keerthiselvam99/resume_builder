@@ -47,7 +47,10 @@ export class AuthService {
       name: input.name,
       email: input.email,
       passwordHash,
-      role: 'user',
+      role:
+        process.env.ADMIN_BOOTSTRAP_EMAIL?.trim().toLowerCase() === input.email.trim().toLowerCase()
+          ? 'admin'
+          : 'user',
     });
     await audit.record({
       actorUserId: created.id,
@@ -63,7 +66,10 @@ export class AuthService {
   ): Promise<SessionWithSecret> {
     const { users, audit } = getRepositories();
     const record = await users.findByEmail(input.email);
-    const ok = record !== null && (await verifyPassword(input.password, record.passwordHash));
+    const ok =
+      record !== null &&
+      record.status === 'active' &&
+      (await verifyPassword(input.password, record.passwordHash));
 
     if (!record || !ok) {
       await audit.record({
@@ -110,7 +116,7 @@ export class AuthService {
     }
 
     const user = await users.findById(record.userId);
-    if (!user) {
+    if (!user || user.status !== 'active') {
       throw new UnauthorizedError('Invalid or expired session.');
     }
 
@@ -152,14 +158,14 @@ export class AuthService {
   async getMe(userId: string): Promise<User> {
     const { users } = getRepositories();
     const record = await users.findById(userId);
-    if (!record) {
+    if (!record || record.status !== 'active') {
       throw new UnauthorizedError('Session user no longer exists.');
     }
     return toUser(record);
   }
 
   private async createSession(
-    user: Pick<User, 'id' | 'name' | 'email' | 'role' | 'createdAt'>
+    user: Pick<User, 'id' | 'name' | 'email' | 'role' | 'status' | 'createdAt'>
   ): Promise<SessionWithSecret> {
     const { refreshTokens } = getRepositories();
     const token = generateRefreshToken();
@@ -173,7 +179,7 @@ export class AuthService {
   }
 
   private buildSession(
-    user: Pick<User, 'id' | 'name' | 'email' | 'role' | 'createdAt'>,
+    user: Pick<User, 'id' | 'name' | 'email' | 'role' | 'status' | 'createdAt'>,
     refreshTokenId: string,
     rawRefreshToken: string
   ): SessionWithSecret {
@@ -194,12 +200,15 @@ export class AuthService {
   }
 }
 
-function toUser(record: Pick<User, 'id' | 'name' | 'email' | 'role' | 'createdAt'>): User {
+function toUser(
+  record: Pick<User, 'id' | 'name' | 'email' | 'role' | 'status' | 'createdAt'>
+): User {
   return {
     id: record.id,
     name: record.name,
     email: record.email,
     role: record.role,
+    status: record.status,
     createdAt: record.createdAt,
   };
 }
