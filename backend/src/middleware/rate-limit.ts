@@ -25,3 +25,4 @@ export const registerLimiter = makeLimiter(config.auth.rateLimit.registerMax);
 export const refreshLimiter = makeLimiter(config.auth.rateLimit.refreshMax);
 /** Job descriptions are relatively expensive to normalize; limit per client without affecting auth. */
 export const jobMatchLimiter = makeLimiter(30);
+export const adminMutationLimiter = makeLimiter(30);

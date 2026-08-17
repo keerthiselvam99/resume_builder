@@ -1,0 +1,42 @@
+[
+  {
+    "method": "get",
+    "path": "/admin/summary",
+    "status": 403,
+    "body": {
+      "error": "Admin access required."
+    }
+  },
+  {
+    "method": "get",
+    "path": "/admin/users",
+    "status": 403,
+    "body": {
+      "error": "Admin access required."
+    }
+  },
+  {
+    "method": "get",
+    "path": "/admin/audit-events",
+    "status": 403,
+    "body": {
+      "error": "Admin access required."
+    }
+  },
+  {
+    "method": "patch",
+    "path": "/admin/users/c75e7fc1-f5c0-4941-bc82-0ddc4ed4b3b3/role",
+    "status": 403,
+    "body": {
+      "error": "Admin access required."
+    }
+  },
+  {
+    "method": "patch",
+    "path": "/admin/users/c75e7fc1-f5c0-4941-bc82-0ddc4ed4b3b3/status",
+    "status": 403,
+    "body": {
+      "error": "Admin access required."
+    }
+  }
+]

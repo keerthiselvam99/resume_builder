@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { AppShell } from './shell/app-shell.component';
-import { ComingSoonComponent } from './shell/coming-soon.component';
 import { authGuard, guestGuard, adminGuard } from './core/guards/auth.guard';
 import { canDeactivateEditor } from './features/editor/editor.guard';
 
@@ -64,7 +63,8 @@ export const routes: Routes = [
       {
         path: 'admin',
         canActivate: [adminGuard],
-        component: ComingSoonComponent,
+        loadComponent: () =>
+          import('./features/admin/admin.component').then((m) => m.AdminComponent),
         title: 'Admin',
       },
     ],

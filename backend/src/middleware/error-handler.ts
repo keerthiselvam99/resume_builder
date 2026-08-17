@@ -13,7 +13,7 @@ export function asyncHandler(
 
 export function errorHandler(err: unknown, req: Request, res: Response, _next: NextFunction): void {
   if (err instanceof ZodError) {
-    req.log.warn?.({ error: err.issues.map((i) => i.message) }, 'request validation failed');
+    req.log?.warn?.({ error: err.issues.map((i) => i.message) }, 'request validation failed');
     res.status(400).json({
       error: 'Invalid request.',
       details: err.issues.map((issue) =>
@@ -27,10 +27,10 @@ export function errorHandler(err: unknown, req: Request, res: Response, _next: N
     if (err.name === 'ValidationError' && 'details' in err && Array.isArray(err.details)) {
       body.details = err.details as string[];
     }
-    req.log.warn?.({ error: err.message, code: err.code }, 'request rejected');
+    req.log?.warn?.({ error: err.message, code: err.code }, 'request rejected');
     res.status(err.statusCode).json(body);
     return;
   }
-  req.log.error?.({ error: err instanceof Error ? err.message : String(err) }, 'unhandled error');
+  req.log?.error?.({ error: err instanceof Error ? err.message : String(err) }, 'unhandled error');
   res.status(500).json({ error: 'Something went wrong. Please try again.' });
 }

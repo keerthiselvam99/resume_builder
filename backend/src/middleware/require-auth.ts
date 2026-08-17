@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 import { ForbiddenError, UnauthorizedError } from '../http/errors';
 import { verifyAccessToken } from '../services/security/tokens';
+import { getRepositories } from '../repositories';
 
-export function requireAuth(req: Request, _res: Response, next: NextFunction): void {
+export async function requireAuth(req: Request, _res: Response, next: NextFunction): Promise<void> {
   const header = req.headers.authorization;
   const token = header?.startsWith('Bearer ') ? header.slice('Bearer '.length) : undefined;
   if (!token) {
@@ -11,15 +12,22 @@ export function requireAuth(req: Request, _res: Response, next: NextFunction): v
   }
   try {
     const payload = verifyAccessToken(token);
-    req.user = { id: payload.sub, email: payload.email, role: payload.role };
+    const current = await getRepositories().users.findById(payload.sub);
+    if (!current || current.status !== 'active') throw new Error('inactive');
+    req.user = { id: current.id, email: current.email, role: current.role };
     next();
   } catch {
     next(new UnauthorizedError('Invalid or expired session.'));
   }
 }
 
-export function requireAdmin(req: Request, _res: Response, next: NextFunction): void {
-  if (req.user?.role !== 'admin') {
+export async function requireAdmin(
+  req: Request,
+  _res: Response,
+  next: NextFunction
+): Promise<void> {
+  const current = req.user ? await getRepositories().users.findById(req.user.id) : null;
+  if (!current || current.status !== 'active' || current.role !== 'admin') {
     next(new ForbiddenError('Admin access required.'));
     return;
   }

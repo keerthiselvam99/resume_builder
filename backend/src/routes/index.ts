@@ -5,6 +5,13 @@ import { login, logout, me, refresh, register } from '../controllers/auth.contro
 import { runAtsAnalysis } from '../controllers/ats.controller';
 import { runJobMatch } from '../controllers/job-matcher.controller';
 import {
+  adminAudits,
+  adminSummary,
+  adminUsers,
+  updateAdminRole,
+  updateAdminStatus,
+} from '../controllers/admin.controller';
+import {
   cloneVersion,
   compareVersions,
   createResume,
@@ -28,6 +35,7 @@ import {
   loginLimiter,
   refreshLimiter,
   registerLimiter,
+  adminMutationLimiter,
 } from '../middleware/rate-limit';
 
 const router = Router();
@@ -70,9 +78,23 @@ router.post('/versions/:versionId/job-match', requireAuth, jobMatchLimiter, runJ
 // PDF export (auth + ownership enforced in the controller)
 router.post('/versions/:versionId/pdf', requireAuth, exportPdf);
 
-// Admin-only placeholder to demonstrate role enforcement
-router.get('/admin/placeholder', requireAuth, requireAdmin, (_req, res) => {
-  res.json({ ok: true });
-});
+router.get('/admin/summary', requireAuth, requireAdmin, adminSummary);
+router.get('/admin/users', requireAuth, requireAdmin, adminUsers);
+router.patch(
+  '/admin/users/:userId/role',
+  requireAuth,
+  requireAdmin,
+  adminMutationLimiter,
+  updateAdminRole
+);
+router.patch(
+  '/admin/users/:userId/status',
+  requireAuth,
+  requireAdmin,
+  adminMutationLimiter,
+  updateAdminStatus
+);
+router.get('/admin/audit-events', requireAuth, requireAdmin, adminAudits);
+router.get('/admin/placeholder', requireAuth, requireAdmin, (_req, res) => res.json({ ok: true }));
 
 export default router;

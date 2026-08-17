@@ -15,6 +15,14 @@ function nowIso(): string {
 
 export class MemoryResumeRepository implements ResumeRepository {
   constructor(private readonly store: MemoryStore) {}
+  async adminCounts(): Promise<{ total: number; saved: number; drafts: number }> {
+    const all = Array.from(this.store.resumes.values());
+    return {
+      total: all.length,
+      saved: all.filter((r) => r.status === 'saved').length,
+      drafts: all.filter((r) => r.status === 'draft').length,
+    };
+  }
 
   async listForUser(userId: string): Promise<Resume[]> {
     return Array.from(this.store.resumes.values())
