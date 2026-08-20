@@ -11,7 +11,15 @@ import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } fr
 import { CertificationEntry } from '../../core/models/resume.model';
 import { AppButton } from '../../shared/components/app-button.component';
 import { AppInput } from '../../shared/components/app-input.component';
-import { afterNextPaint, entryId, issueNotAfterExpiry, moveIndex } from './editor-entry.utils';
+import { MonthYearPickerComponent } from '../../shared/components/month-year-picker.component';
+import {
+  afterNextPaint,
+  entryId,
+  issueNotAfterExpiry,
+  monthError,
+  monthNotInFuture,
+  moveIndex,
+} from './editor-entry.utils';
 
 @Component({
   selector: 'app-editor-certifications-form',
@@ -85,7 +93,11 @@ import { afterNextPaint, entryId, issueNotAfterExpiry, moveIndex } from './edito
                 [error]="errorFor(group, 'issuer')"
                 formControlName="issuer"
               />
-              <app-input label="Issue date" type="month" formControlName="issueDate" />
+              <app-month-year-picker
+                label="Issue date"
+                [error]="dateError(group, 'issueDate')"
+                formControlName="issueDate"
+              />
               <div class="field">
                 <label class="field__label" for="doesNotExpire-{{ group.controls['id'].value }}">
                   Does not expire
@@ -96,12 +108,10 @@ import { afterNextPaint, entryId, issueNotAfterExpiry, moveIndex } from './edito
                   formControlName="doesNotExpire"
                 />
               </div>
-              <app-input
+              <app-month-year-picker
                 label="Expiry date"
-                type="month"
-                [disabled]="group.controls['doesNotExpire'].value"
                 formControlName="expiryDate"
-                [error]="errorFor(group, 'expiryDate')"
+                [error]="dateError(group, 'expiryDate')"
               />
               <app-input label="Credential ID" formControlName="credentialId" />
               <app-input
@@ -235,7 +245,7 @@ import { afterNextPaint, entryId, issueNotAfterExpiry, moveIndex } from './edito
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, AppButton, AppInput],
+  imports: [ReactiveFormsModule, AppButton, AppInput, MonthYearPickerComponent],
 })
 export class EditorCertificationsFormComponent {
   readonly certifications = input<CertificationEntry[]>([]);
@@ -373,9 +383,9 @@ export class EditorCertificationsFormComponent {
         id: new FormControl(entryId()),
         name: new FormControl('', Validators.required),
         issuer: new FormControl('', Validators.required),
-        issueDate: new FormControl(''),
+        issueDate: new FormControl('', [monthNotInFuture]),
         doesNotExpire: new FormControl(false),
-        expiryDate: new FormControl(''),
+        expiryDate: new FormControl('', [monthNotInFuture]),
         credentialId: new FormControl(''),
         credentialUrl: new FormControl(''),
       },
@@ -387,9 +397,12 @@ export class EditorCertificationsFormComponent {
   }
 
   private emit(): void {
-    const value = (this.entries.getRawValue() ?? []) as CertificationEntry[];
+    const committed = this.entries.controls.filter(
+      (group) => !this.draftIds.has(String(group.controls['id'].value)),
+    );
+    if (committed.some((group) => group.invalid)) return;
+    const value = committed.map((group) => group.getRawValue()) as CertificationEntry[];
     const filtered = value
-      .filter((e) => !this.draftIds.has(e.id))
       .filter((e) => e.name.trim().length > 0 && e.issuer.trim().length > 0)
       .map((e) => ({
         ...e,
@@ -397,5 +410,9 @@ export class EditorCertificationsFormComponent {
       }));
     this.lastEmittedJson = JSON.stringify(filtered);
     this.certificationsChange.emit(filtered);
+  }
+
+  dateError(group: FormGroup, control: string): string | null {
+    return monthError(group.controls[control], 'date');
   }
 }

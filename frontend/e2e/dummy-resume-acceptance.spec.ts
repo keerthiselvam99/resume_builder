@@ -63,7 +63,16 @@ async function addEntry(
 ): Promise<Locator> {
   await section.getByRole('button', { name: addName }).click();
   const card = section.locator('[data-draft="true"]');
-  for (const [label, value] of fields) await card.getByLabel(label).fill(value);
+  for (const [label, value] of fields) {
+    const isMonthYear = /^(Start date|End date|Issue date|Expiry date|Date)$/.test(label);
+    if (isMonthYear) {
+      const [year, month] = value.split('-');
+      await card.getByRole('combobox', { name: `${label} month` }).selectOption(month);
+      await card.getByRole('combobox', { name: `${label} year` }).selectOption(year);
+    } else {
+      await card.getByLabel(label).fill(value);
+    }
+  }
   return card;
 }
 
@@ -209,6 +218,7 @@ test('realistic Maya Raman full-stack acceptance', async ({ page, request }) => 
     [
       ['Company', 'Temporary Employer'],
       ['Role', 'Temporary Role'],
+      ['End date', '2020-01'],
     ],
     'Remove experience',
   );

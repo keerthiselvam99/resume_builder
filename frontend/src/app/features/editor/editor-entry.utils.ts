@@ -5,6 +5,15 @@ export function monthAfter(a: string, b: string): boolean {
   return a.localeCompare(b) > 0;
 }
 
+export function monthNotInFuture(control: AbstractControl): ValidationErrors | null {
+  const value = String(control.value ?? '');
+  if (!value) return null;
+  if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(value)) return { monthYear: true };
+  const now = new Date();
+  const current = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  return value > current || Number(value.slice(0, 4)) < 1950 ? { futureMonth: true } : null;
+}
+
 /**
  * Group-level validator: end date must not precede start date.
  * Skipped when "currently working here" is set or either date is blank
@@ -18,7 +27,7 @@ export function endNotBeforeStart(control: AbstractControl): ValidationErrors | 
   if (current || !start || !end) {
     return null;
   }
-  return monthAfter(end, start) ? null : { endBeforeStart: true };
+  return end.localeCompare(start) >= 0 ? null : { endBeforeStart: true };
 }
 
 /**
@@ -33,7 +42,23 @@ export function issueNotAfterExpiry(control: AbstractControl): ValidationErrors 
   if (doesNotExpire || !issue || !expiry) {
     return null;
   }
-  return monthAfter(expiry, issue) ? null : { expiryBeforeIssue: true };
+  return expiry.localeCompare(issue) >= 0 ? null : { expiryBeforeIssue: true };
+}
+
+export function monthError(
+  control: AbstractControl,
+  kind: 'start' | 'end' | 'date',
+): string | null {
+  if (!control.touched || !control.errors) return null;
+  if (control.errors['required'] || control.errors['monthYear']) return 'Choose a month and year.';
+  if (control.errors['futureMonth']) {
+    return kind === 'start'
+      ? 'Start date cannot be in the future.'
+      : kind === 'end'
+        ? 'End date cannot be in the future.'
+        : 'Date cannot be in the future.';
+  }
+  return null;
 }
 
 /** Generate a stable-enough id for dynamic entries. */

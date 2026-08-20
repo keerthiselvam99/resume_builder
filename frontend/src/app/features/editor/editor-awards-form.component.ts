@@ -11,7 +11,14 @@ import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } fr
 import { AwardEntry } from '../../core/models/resume.model';
 import { AppButton } from '../../shared/components/app-button.component';
 import { AppInput } from '../../shared/components/app-input.component';
-import { afterNextPaint, entryId, moveIndex } from './editor-entry.utils';
+import { MonthYearPickerComponent } from '../../shared/components/month-year-picker.component';
+import {
+  afterNextPaint,
+  entryId,
+  monthError,
+  monthNotInFuture,
+  moveIndex,
+} from './editor-entry.utils';
 
 @Component({
   selector: 'app-editor-awards-form',
@@ -81,7 +88,11 @@ import { afterNextPaint, entryId, moveIndex } from './editor-entry.utils';
                 formControlName="title"
               />
               <app-input label="Issuing organization" formControlName="issuer" />
-              <app-input label="Date" type="month" formControlName="date" />
+              <app-month-year-picker
+                label="Date"
+                [error]="dateError(group)"
+                formControlName="date"
+              />
               <app-input
                 label="Description"
                 formControlName="description"
@@ -198,7 +209,7 @@ import { afterNextPaint, entryId, moveIndex } from './editor-entry.utils';
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, AppButton, AppInput],
+  imports: [ReactiveFormsModule, AppButton, AppInput, MonthYearPickerComponent],
 })
 export class EditorAwardsFormComponent {
   readonly awards = input<AwardEntry[]>([]);
@@ -316,17 +327,23 @@ export class EditorAwardsFormComponent {
       id: new FormControl(entryId()),
       title: new FormControl('', Validators.required),
       issuer: new FormControl(''),
-      date: new FormControl(''),
+      date: new FormControl('', [monthNotInFuture]),
       description: new FormControl('', Validators.maxLength(500)),
     });
   }
 
   private emit(): void {
-    const value = (this.entries.getRawValue() ?? []) as AwardEntry[];
-    const filtered = value
-      .filter((e) => !this.draftIds.has(e.id))
-      .filter((e) => e.title.trim().length > 0);
+    const committed = this.entries.controls.filter(
+      (group) => !this.draftIds.has(String(group.controls['id'].value)),
+    );
+    if (committed.some((group) => group.invalid)) return;
+    const value = committed.map((group) => group.getRawValue()) as AwardEntry[];
+    const filtered = value.filter((e) => e.title.trim().length > 0);
     this.lastEmittedJson = JSON.stringify(filtered);
     this.awardsChange.emit(filtered);
+  }
+
+  dateError(group: FormGroup): string | null {
+    return monthError(group.controls['date'], 'date');
   }
 }
