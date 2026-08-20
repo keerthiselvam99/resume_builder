@@ -28,7 +28,13 @@ export class SessionService {
   }
 
   register(name: string, email: string, password: string) {
-    return this.auth.register({ name, email, password }).pipe(tap((s) => this.setSession(s)));
+    return this.auth.register({ name, email, password }).pipe(
+      tap((result) => {
+        if (!result.requiresVerification) {
+          this.state.set(MockStore.read<AuthSession | null>(SESSION_KEY, null));
+        }
+      }),
+    );
   }
 
   login(email: string, password: string) {
@@ -53,7 +59,18 @@ export class SessionService {
   }
 
   resetPassword(token: string, newPassword: string) {
-    return this.auth.resetPassword(token, newPassword);
+    return this.auth.resetPassword(token, newPassword).pipe(
+      tap(() => {
+        MockStore.remove(SESSION_KEY);
+        this.state.set(null);
+      }),
+    );
+  }
+  verifyEmail(token: string) {
+    return this.auth.verifyEmail(token);
+  }
+  resendVerification(email: string) {
+    return this.auth.resendVerification(email);
   }
 
   private setSession(session: AuthSession): void {

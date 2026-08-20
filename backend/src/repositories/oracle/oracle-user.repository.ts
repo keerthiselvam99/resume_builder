@@ -13,6 +13,8 @@ interface UserRow {
   CREATED_AT: string;
   UPDATED_AT: string;
   STATUS_CODE: string;
+  EMAIL_VERIFIED_AT?: string | null;
+  AUTH_VERSION?: number;
 }
 
 interface AdminCountRow {
@@ -30,14 +32,15 @@ export class OracleUserRepository implements UserRepository {
     return withConnection(async (conn) => {
       try {
         await conn.execute(
-          `INSERT INTO app_users (id, name, email, password_hash, created_at, updated_at)
-           VALUES (:id, :name, :email, :passwordHash,
+          `INSERT INTO app_users (id, name, email, password_hash, email_verified_at, created_at, updated_at)
+           VALUES (:id, :name, :email, :passwordHash, :emailVerifiedAt,
                    TO_TIMESTAMP(:createdAt, '${TS_MASK}'), TO_TIMESTAMP(:createdAt, '${TS_MASK}'))`,
           {
             id: input.id,
             name: input.name.trim(),
             email,
             passwordHash: input.passwordHash,
+            emailVerifiedAt: input.emailVerifiedAt ? new Date(input.emailVerifiedAt) : null,
             createdAt,
           },
           { autoCommit: false }
@@ -63,6 +66,7 @@ export class OracleUserRepository implements UserRepository {
         passwordHash: input.passwordHash,
         role: input.role,
         status: 'active',
+        emailVerifiedAt: input.emailVerifiedAt,
         createdAt,
         updatedAt: createdAt,
       };
@@ -248,12 +252,35 @@ export class OracleUserRepository implements UserRepository {
     return (await this.findById(userId))!;
   }
 
+  async markEmailVerified(userId: string, verifiedAt: string): Promise<UserRecord> {
+    await withConnection(async (conn) => {
+      const result = await conn.execute(
+        `UPDATE app_users SET email_verified_at=TO_TIMESTAMP(:verifiedAt,'${TS_MASK}'), updated_at=TO_TIMESTAMP(:verifiedAt,'${TS_MASK}') WHERE id=:userId`,
+        { userId, verifiedAt }
+      );
+      if (!result.rowsAffected) throw new NotFoundError('User not found.');
+    });
+    return (await this.findById(userId))!;
+  }
+
+  async updatePasswordHash(userId: string, passwordHash: string): Promise<void> {
+    await withConnection(async (conn) => {
+      const result = await conn.execute(
+        `UPDATE app_users SET password_hash=:passwordHash, auth_version=auth_version+1, updated_at=SYSTIMESTAMP WHERE id=:userId`,
+        { userId, passwordHash }
+      );
+      if (!result.rowsAffected) throw new NotFoundError('User not found.');
+    });
+  }
+
   private async findBy(column: 'id' | 'email', value: string): Promise<UserRecord | null> {
     return withConnection(async (conn) => {
       const where = column === 'email' ? 'u.email = :value' : 'u.id = :value';
       const result = await conn.execute<UserRow>(
         `SELECT u.id, u.name, u.email, u.password_hash,
                 r.code AS role_code, u.status_code,
+                TO_CHAR(u.email_verified_at, '${TS_MASK}') AS email_verified_at,
+                u.auth_version,
                 TO_CHAR(u.created_at, '${TS_MASK}') AS created_at,
                 TO_CHAR(u.updated_at, '${TS_MASK}') AS updated_at
          FROM app_users u
@@ -277,6 +304,8 @@ function mapUserRow(row: UserRow): UserRecord {
     passwordHash: row.PASSWORD_HASH,
     role: row.ROLE_CODE === 'admin' ? 'admin' : 'user',
     status: row.STATUS_CODE === 'disabled' ? 'disabled' : 'active',
+    emailVerifiedAt: row.EMAIL_VERIFIED_AT,
+    authVersion: Number(row.AUTH_VERSION ?? 0),
     createdAt: row.CREATED_AT,
     updatedAt: row.UPDATED_AT,
   };

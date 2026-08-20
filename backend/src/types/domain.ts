@@ -8,11 +8,27 @@ export interface User {
   role: UserRole;
   status: UserStatus;
   createdAt: string;
+  /** null means explicitly unverified; undefined is a migrated pre-006 verified account. */
+  emailVerifiedAt?: string | null;
+  authVersion?: number;
 }
 
 export interface UserRecord extends User {
   passwordHash: string;
   updatedAt: string;
+}
+
+export type ActionTokenPurpose = 'verify_email' | 'reset_password';
+
+export interface ActionTokenRecord {
+  id: string;
+  userId: string;
+  purpose: ActionTokenPurpose;
+  tokenHash: string;
+  createdAt: string;
+  expiresAt: string;
+  consumedAt: string | null;
+  revokedAt: string | null;
 }
 
 export interface RefreshTokenRecord {

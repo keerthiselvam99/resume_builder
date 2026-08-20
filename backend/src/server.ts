@@ -13,6 +13,15 @@ import { getLivez, getPdfz, getReadyz } from './controllers/health.controller';
 
 const app = express();
 
+export const httpLoggerOptions = {
+  level: config.logLevel,
+  genReqId: () => randomUUID(),
+  redact: {
+    paths: ['req.headers.authorization', 'req.headers.cookie', 'res.headers["set-cookie"]'],
+    censor: '[Redacted]',
+  },
+};
+
 app.use(helmet());
 app.use(
   cors({
@@ -22,12 +31,7 @@ app.use(
 );
 app.use(express.json({ limit: config.bodyLimit }));
 app.use(cookieParser());
-app.use(
-  pinoHttp({
-    level: config.logLevel,
-    genReqId: () => randomUUID(),
-  })
-);
+app.use(pinoHttp(httpLoggerOptions));
 
 /**
  * Correlation ID: echoes the pino request id back to the caller so logs and

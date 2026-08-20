@@ -19,6 +19,8 @@ export class MemoryUserRepository implements UserRepository {
       passwordHash: input.passwordHash,
       role: input.role,
       status: 'active',
+      emailVerifiedAt: input.emailVerifiedAt,
+      authVersion: 0,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
@@ -77,6 +79,24 @@ export class MemoryUserRepository implements UserRepository {
       users: records.filter((user) => user.role === 'user').length,
       admins: records.filter((user) => user.role === 'admin').length,
     };
+  }
+
+  async markEmailVerified(userId: string, verifiedAt: string): Promise<UserRecord> {
+    const user = this.store.users.get(userId);
+    if (!user) throw new NotFoundError('User not found.');
+    user.emailVerifiedAt = verifiedAt;
+    user.updatedAt = verifiedAt;
+    this.store.touch();
+    return { ...user };
+  }
+
+  async updatePasswordHash(userId: string, passwordHash: string): Promise<void> {
+    const user = this.store.users.get(userId);
+    if (!user) throw new NotFoundError('User not found.');
+    user.passwordHash = passwordHash;
+    user.authVersion = (user.authVersion ?? 0) + 1;
+    user.updatedAt = new Date().toISOString();
+    this.store.touch();
   }
 
   async updateRoleAtomic(

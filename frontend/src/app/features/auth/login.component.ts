@@ -7,6 +7,7 @@ import { AppButton } from '../../shared/components/app-button.component';
 import { AppInput } from '../../shared/components/app-input.component';
 import { AppPasswordInput } from '../../shared/components/app-password-input.component';
 import { AuthShellComponent } from './auth-shell.component';
+import { ApiError } from '../../core/repositories/http/api-client';
 
 @Component({
   selector: 'app-login',
@@ -36,6 +37,9 @@ import { AuthShellComponent } from './auth-shell.component';
 
           @if (errorMessage()) {
             <p class="error" role="alert">{{ errorMessage() }}</p>
+          }
+          @if (verificationRequired()) {
+            <button type="button" (click)="openCheckEmail()">Resend verification</button>
           }
 
           <app-button type="submit" [loading]="submitting()" class="submit">Log in</app-button>
@@ -101,6 +105,7 @@ export class LoginComponent {
 
   readonly submitting = signal(false);
   readonly errorMessage = signal<string | null>(null);
+  readonly verificationRequired = signal(false);
 
   onSubmit(): void {
     if (this.form.invalid) {
@@ -115,8 +120,15 @@ export class LoginComponent {
       error: (err: Error) => {
         this.submitting.set(false);
         this.errorMessage.set(err.message || 'Login failed.');
+        this.verificationRequired.set(
+          err instanceof ApiError && err.code === 'EMAIL_VERIFICATION_REQUIRED',
+        );
       },
     });
+  }
+
+  openCheckEmail(): void {
+    this.router.navigate(['/check-email'], { state: { email: this.form.value.email ?? '' } });
   }
 
   private redirectAfterLogin(): void {

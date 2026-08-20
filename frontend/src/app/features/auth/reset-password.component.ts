@@ -98,17 +98,22 @@ export class ResetPasswordComponent {
   readonly submitting = signal(false);
   readonly errorMessage = signal<string | null>(null);
   readonly success = signal(false);
+  private readonly token: string;
+
+  constructor() {
+    this.token = this.route.snapshot.queryParamMap.get('token') ?? '';
+    setTimeout(() => history.replaceState({}, '', location.pathname));
+  }
 
   onSubmit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
-    const token = this.route.snapshot.queryParamMap.get('token') ?? 'mock-token';
     const password = this.form.value.password ?? '';
     this.submitting.set(true);
     this.errorMessage.set(null);
-    this.session.resetPassword(token, password).subscribe({
+    this.session.resetPassword(this.token, password).subscribe({
       next: () => {
         this.success.set(true);
         this.submitting.set(false);

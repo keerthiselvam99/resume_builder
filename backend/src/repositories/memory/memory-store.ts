@@ -4,6 +4,7 @@ import {
   Resume,
   ResumeVersion,
   UserRecord,
+  ActionTokenRecord,
 } from '../../types/domain';
 
 export interface MemoryDbData {
@@ -12,6 +13,7 @@ export interface MemoryDbData {
   auditEvents: AuditEvent[];
   resumes: Resume[];
   versions: ResumeVersion[];
+  actionTokens: ActionTokenRecord[];
 }
 
 /**
@@ -25,6 +27,7 @@ export class MemoryStore {
   readonly auditEvents: AuditEvent[] = [];
   readonly resumes = new Map<string, Resume>();
   readonly versions = new Map<string, ResumeVersion>();
+  readonly actionTokens = new Map<string, ActionTokenRecord>();
 
   /** Invoked after every mutating operation (used by the file store). */
   onMutate: (() => void) | null = null;
@@ -40,6 +43,7 @@ export class MemoryStore {
       auditEvents: this.auditEvents.map((e) => ({ ...e })),
       resumes: Array.from(this.resumes.values()),
       versions: Array.from(this.versions.values()),
+      actionTokens: Array.from(this.actionTokens.values()),
     };
   }
 
@@ -49,8 +53,13 @@ export class MemoryStore {
     this.auditEvents.length = 0;
     this.resumes.clear();
     this.versions.clear();
+    this.actionTokens.clear();
     for (const user of data.users) {
       user.status ??= 'active';
+      user.authVersion ??= 0;
+      if (!Object.prototype.hasOwnProperty.call(user, 'emailVerifiedAt')) {
+        user.emailVerifiedAt = user.createdAt;
+      }
       this.users.set(user.id, user);
     }
     for (const token of data.refreshTokens) {
@@ -66,6 +75,7 @@ export class MemoryStore {
     for (const version of data.versions) {
       this.versions.set(version.id, version);
     }
+    for (const token of data.actionTokens ?? []) this.actionTokens.set(token.id, token);
   }
 
   clear(): void {
@@ -74,5 +84,6 @@ export class MemoryStore {
     this.auditEvents.length = 0;
     this.resumes.clear();
     this.versions.clear();
+    this.actionTokens.clear();
   }
 }

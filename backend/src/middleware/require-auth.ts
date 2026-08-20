@@ -13,7 +13,8 @@ export async function requireAuth(req: Request, _res: Response, next: NextFuncti
   try {
     const payload = verifyAccessToken(token);
     const current = await getRepositories().users.findById(payload.sub);
-    if (!current || current.status !== 'active') throw new Error('inactive');
+    if (!current || current.status !== 'active' || (current.authVersion ?? 0) !== payload.ver)
+      throw new Error('inactive');
     req.user = { id: current.id, email: current.email, role: current.role };
     next();
   } catch {
