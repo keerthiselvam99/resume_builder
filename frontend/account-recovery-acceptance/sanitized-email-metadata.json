@@ -1,0 +1,10 @@
+{
+  "recipientDomain": "example.com",
+  "messageKinds": [
+    "verify-email",
+    "reset-password",
+    "password-changed"
+  ],
+  "appOrigin": "http://127.0.0.1:4201",
+  "rawLinksRedacted": true
+}

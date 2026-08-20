@@ -1,9 +1,16 @@
 import { Db } from '../db/connection';
+import { resolveEmailConfiguration } from './email/email-config';
+
+interface EmailReadiness {
+  provider: 'capture' | 'resend' | 'disabled';
+  configured: boolean;
+}
 
 export interface LivenessStatus {
   status: 'ok';
   timestamp: string;
   version: string;
+  email: EmailReadiness;
 }
 
 export interface HealthStatus {
@@ -11,6 +18,7 @@ export interface HealthStatus {
   database: 'up' | 'down';
   timestamp: string;
   version: string;
+  email: EmailReadiness;
 }
 
 export class HealthService {
@@ -24,6 +32,7 @@ export class HealthService {
       status: 'ok',
       timestamp: new Date().toISOString(),
       version: process.env.npm_package_version ?? '0.1.0',
+      email: emailReadiness(),
     };
   }
 
@@ -58,6 +67,18 @@ export class HealthService {
       database,
       timestamp: new Date().toISOString(),
       version: process.env.npm_package_version ?? '0.1.0',
+      email: emailReadiness(),
     };
+  }
+}
+
+function emailReadiness(): EmailReadiness {
+  try {
+    const email = resolveEmailConfiguration();
+    return { provider: email.provider, configured: email.configured };
+  } catch {
+    const raw = process.env.EMAIL_PROVIDER;
+    const provider = raw === 'capture' || raw === 'resend' ? raw : 'disabled';
+    return { provider, configured: false };
   }
 }

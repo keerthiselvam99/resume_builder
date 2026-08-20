@@ -37,6 +37,17 @@ export class EmailVerificationRequiredError extends AppError {
   }
 }
 
+export class EmailDeliveryUnavailableError extends AppError {
+  constructor() {
+    super(
+      503,
+      'EMAIL_DELIVERY_UNAVAILABLE',
+      'Your account was created, but we could not send the email. Please try resend shortly.'
+    );
+    this.name = 'EmailDeliveryUnavailableError';
+  }
+}
+
 export class ForbiddenError extends AppError {
   constructor(message = 'Forbidden.') {
     super(403, 'forbidden', message);

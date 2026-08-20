@@ -14,6 +14,8 @@ import { app } from '../src/server';
 describe('GET /api/v1/health', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    process.env.NODE_ENV = 'test';
+    process.env.EMAIL_PROVIDER = 'disabled';
   });
 
   afterEach(() => {
@@ -31,6 +33,8 @@ describe('GET /api/v1/health', () => {
 
     expect(res.status).toBe(200);
     expect(res.body).toMatchObject({ app: 'ok', database: 'up' });
+    expect(res.body.email).toEqual({ provider: 'disabled', configured: false });
+    expect(JSON.stringify(res.body)).not.toMatch(/api[_-]?key|fromAddress|replyTo/i);
   });
 
   it('returns 503 with database down', async () => {

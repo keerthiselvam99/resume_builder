@@ -39,7 +39,8 @@ export default defineConfig({
         AUTH_RATE_LIMIT_REFRESH_MAX: '10000',
         ADMIN_BOOTSTRAP_EMAIL: 'admin.e2e@example.com',
         NODE_ENV: 'test',
-        DEV_EMAIL_CAPTURE: 'true',
+        EMAIL_PROVIDER: 'capture',
+        PUBLIC_APP_URL: 'http://127.0.0.1:4201',
         E2E_LEGACY_AUTO_VERIFY: 'true',
         // Warm the PDF Chromium worker at boot so the first real export never
         // pays the cold browser-launch cost inside the response budget. The

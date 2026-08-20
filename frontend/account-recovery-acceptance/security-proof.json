@@ -1,0 +1,9 @@
+{
+  "tokenStorage": "SHA-256 hashes only",
+  "browserTokenStorage": "none",
+  "verificationSingleUse": true,
+  "resetSingleUse": true,
+  "oldAccessRejected": true,
+  "oldRefreshRejected": true,
+  "passwordsIncluded": false
+}

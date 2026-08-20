@@ -33,7 +33,8 @@ describe('account recovery API', () => {
     resetDataStore();
     captureEmailProvider.clear();
     process.env.NODE_ENV = 'test';
-    process.env.DEV_EMAIL_CAPTURE = 'true';
+    process.env.EMAIL_PROVIDER = 'capture';
+    process.env.PUBLIC_APP_URL = 'http://127.0.0.1:4201';
     delete process.env.ADMIN_BOOTSTRAP_EMAIL;
   });
   it('registers unverified without exposing or storing the raw token', async () => {
@@ -46,6 +47,23 @@ describe('account recovery API', () => {
     const token = raw('verify-email', email);
     const memory = getRepositories() as unknown as { store: { snapshot(): unknown } };
     expect(JSON.stringify(memory.store.snapshot())).not.toContain(token);
+  });
+  it('preserves an unverified account and returns a safe error when initial delivery fails', async () => {
+    process.env.EMAIL_PROVIDER = 'disabled';
+    const email = 'delivery-failed@example.com';
+    const response = await request(app)
+      .post('/api/v1/auth/register')
+      .set('x-account-recovery-test', 'true')
+      .send({ name: 'Delivery Failure', email, password });
+    expect(response.status).toBe(503);
+    expect(response.body).toEqual({
+      error:
+        'Your account was created, but we could not send the email. Please try resend shortly.',
+      code: 'EMAIL_DELIVERY_UNAVAILABLE',
+    });
+    const user = await getRepositories().users.findByEmail(email);
+    expect(user?.emailVerifiedAt).toBeNull();
+    expect(JSON.stringify(response.body)).not.toContain(email);
   });
   it('verifies once, rejects reuse, and then permits login', async () => {
     const email = 'verify@example.com';
@@ -149,9 +167,9 @@ describe('account recovery API', () => {
     expect(() => getEmailProvider()).toThrow(/cannot be used in production/);
   });
   it('returns 404 when the mailbox is disabled or production', async () => {
-    delete process.env.DEV_EMAIL_CAPTURE;
+    process.env.EMAIL_PROVIDER = 'disabled';
     expect((await request(app).get('/api/v1/dev/mailbox')).status).toBe(404);
-    process.env.DEV_EMAIL_CAPTURE = 'true';
+    process.env.EMAIL_PROVIDER = 'capture';
     process.env.NODE_ENV = 'production';
     expect((await request(app).get('/api/v1/dev/mailbox')).status).toBe(404);
   });

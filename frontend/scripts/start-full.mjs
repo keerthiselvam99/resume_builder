@@ -49,7 +49,12 @@ function run(nodeArgs, cwd, env, label) {
 const backend = run(
   [join(backendDir, 'node_modules', 'tsx', 'dist', 'cli.mjs'), 'src/server.ts'],
   backendDir,
-  safeEnv({ PDF_WARMUP: 'true', DATA_STORE: 'memory', DEV_EMAIL_CAPTURE: 'true' }),
+  safeEnv({
+    PDF_WARMUP: 'true',
+    DATA_STORE: 'memory',
+    EMAIL_PROVIDER: 'capture',
+    PUBLIC_APP_URL: 'http://127.0.0.1:4201',
+  }),
   'backend',
 );
 

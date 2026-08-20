@@ -23,7 +23,7 @@ import { AuthShellComponent } from './auth-shell.component';
             : 'Resend verification email'
         }}</button
       ><a routerLink="/register">Change email</a><a routerLink="/login">Back to login</a>
-      <p class="demo">Demo mode uses the local development mailbox; no external email is sent.</p>
+      <p class="demo">Delivery can take a few minutes. Check your spam folder before resending.</p>
     </div></app-auth-shell
   >`,
   styles: `
