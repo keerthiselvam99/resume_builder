@@ -5,6 +5,7 @@ export class ApiError extends Error {
   constructor(
     message: string,
     readonly status: number,
+    readonly code?: string,
   ) {
     super(message);
     this.name = 'ApiError';
@@ -83,7 +84,8 @@ export class HttpApiClient {
       credentials: 'include',
     });
     if (!response.ok) {
-      throw new ApiError(await readError(response), response.status);
+      const detail = await readError(response);
+      throw new ApiError(detail.message, response.status, detail.code);
     }
     return response;
   }
@@ -111,17 +113,21 @@ export class HttpApiClient {
   }
 }
 
-async function readError(response: Response): Promise<string> {
+async function readError(response: Response): Promise<{ message: string; code?: string }> {
   try {
     const body: unknown = await response.json();
     if (body && typeof body === 'object' && 'error' in body) {
       const message = (body as { error?: unknown }).error;
       if (typeof message === 'string' && message) {
-        return message;
+        const code = 'code' in body ? body.code : undefined;
+        return {
+          message,
+          code: typeof code === 'string' ? code : undefined,
+        };
       }
     }
   } catch {
     // Non-JSON error body; fall through to the status-based message.
   }
-  return `Request failed (${response.status}).`;
+  return { message: `Request failed (${response.status}).` };
 }

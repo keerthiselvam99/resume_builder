@@ -8,6 +8,8 @@ import {
   AuditEvent,
   UserRole,
   UserStatus,
+  ActionTokenPurpose,
+  ActionTokenRecord,
 } from '../types/domain';
 
 export interface CreateUserInput {
@@ -16,6 +18,7 @@ export interface CreateUserInput {
   email: string;
   passwordHash: string;
   role: User['role'];
+  emailVerifiedAt?: string | null;
 }
 
 export interface UserRepository {
@@ -34,6 +37,26 @@ export interface UserRepository {
   countActiveAdmins(): Promise<number>;
   updateRoleAtomic(actorId: string, userId: string, role: UserRole): Promise<UserRecord>;
   updateStatusAtomic(actorId: string, userId: string, status: UserStatus): Promise<UserRecord>;
+  markEmailVerified(userId: string, verifiedAt: string): Promise<UserRecord>;
+  updatePasswordHash(userId: string, passwordHash: string): Promise<void>;
+}
+
+export interface ActionTokenRepository {
+  createReplacing(input: {
+    id: string;
+    userId: string;
+    purpose: ActionTokenPurpose;
+    tokenHash: string;
+    createdAt: string;
+    expiresAt: string;
+  }): Promise<ActionTokenRecord>;
+  consume(
+    tokenHash: string,
+    purpose: ActionTokenPurpose,
+    now: string
+  ): Promise<ActionTokenRecord | null>;
+  revokeAllForUser(userId: string, purpose?: ActionTokenPurpose): Promise<void>;
+  cleanupExpired(now: string): Promise<number>;
 }
 
 export interface PageResult<T> {

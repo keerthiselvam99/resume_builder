@@ -34,10 +34,10 @@ describe('MockAuthRepository', () => {
   });
 
   it('registers a new user and persists the record', async () => {
-    const session = await lastValueFrom(
+    const registration = await lastValueFrom(
       repo.register({ name: 'Jane', email: 'jane@example.com', password: 'Secret123!' }),
     );
-    expect(session.user.email).toBe('jane@example.com');
+    expect(registration).toEqual({ requiresVerification: true, email: 'jane@example.com' });
     const users = MockStore.read<MockUserRecord[]>('users', []);
     expect(users.some((u) => u.email === 'jane@example.com')).toBe(true);
   });

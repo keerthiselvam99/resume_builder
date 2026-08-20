@@ -570,6 +570,9 @@ describe('ResumeEditorComponent', () => {
       expect(request.filename).toBe('arun-kumar-master-resume.pdf');
       expect(request.templateDefinitionId).toBe('t-classic-ats-navy');
       expect(request.content.contacts.fullName).toBe('Arun Kumar');
+      expect(TestBed.inject(Router).navigate).toHaveBeenCalledWith(['/job-matcher'], {
+        queryParams: { resumeId: 'r-master', versionId: 'v-master' },
+      });
     });
 
     it('triggers a browser download using the returned blob', async () => {
@@ -618,6 +621,37 @@ describe('ResumeEditorComponent', () => {
       expect((fixture.nativeElement as HTMLElement).textContent).toContain(
         'The template markup is not supported.',
       );
+      expect(TestBed.inject(Router).navigate).not.toHaveBeenCalledWith(
+        ['/job-matcher'],
+        expect.anything(),
+      );
+    });
+
+    it('rejects a non-PDF response and stays in the editor', async () => {
+      pdfRepo.exportPdf.mockResolvedValueOnce({
+        blob: new Blob(['not a pdf'], { type: 'text/plain' }),
+        filename: 'bad.pdf',
+        pageCount: 0,
+      });
+      const component = fixture.componentInstance;
+      fixture.detectChanges();
+      await until(loaded(component));
+      await component.downloadPdf();
+      expect(component.pdfState()).toBe('error');
+      expect(component.pdfMessage()).toContain('not a valid PDF');
+      expect(TestBed.inject(Router).navigate).not.toHaveBeenCalledWith(
+        ['/job-matcher'],
+        expect.anything(),
+      );
+    });
+
+    it('coalesces double-clicks into one export and one navigation', async () => {
+      const component = fixture.componentInstance;
+      fixture.detectChanges();
+      await until(loaded(component));
+      await Promise.all([component.downloadPdf(), component.downloadPdf()]);
+      expect(pdfRepo.exportPdf).toHaveBeenCalledTimes(1);
+      expect(TestBed.inject(Router).navigate).toHaveBeenCalledTimes(1);
     });
 
     it('resets the success status after a timeout', async () => {

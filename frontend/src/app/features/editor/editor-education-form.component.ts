@@ -11,7 +11,15 @@ import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } fr
 import { EducationEntry } from '../../core/models/resume.model';
 import { AppButton } from '../../shared/components/app-button.component';
 import { AppInput } from '../../shared/components/app-input.component';
-import { afterNextPaint, endNotBeforeStart, entryId, moveIndex } from './editor-entry.utils';
+import { MonthYearPickerComponent } from '../../shared/components/month-year-picker.component';
+import {
+  afterNextPaint,
+  endNotBeforeStart,
+  entryId,
+  monthError,
+  monthNotInFuture,
+  moveIndex,
+} from './editor-entry.utils';
 
 @Component({
   selector: 'app-editor-education-form',
@@ -85,8 +93,16 @@ import { afterNextPaint, endNotBeforeStart, entryId, moveIndex } from './editor-
             </div>
 
             <div class="grid grid--dates">
-              <app-input label="Start date" type="month" formControlName="startDate" />
-              <app-input label="End date" type="month" formControlName="endDate" />
+              <app-month-year-picker
+                label="Start date"
+                [error]="dateError(group, 'startDate', 'start')"
+                formControlName="startDate"
+              />
+              <app-month-year-picker
+                label="End date"
+                [error]="dateError(group, 'endDate', 'end')"
+                formControlName="endDate"
+              />
               <app-input
                 label="Grade / Score (optional)"
                 [error]="errorFor(group, 'gpa')"
@@ -98,7 +114,9 @@ import { afterNextPaint, endNotBeforeStart, entryId, moveIndex } from './editor-
               group.controls['startDate'].touched &&
               group.controls['endDate'].touched
             ) {
-              <p class="field-error" role="alert">End date cannot be before start date.</p>
+              <p class="field-error" role="alert">
+                End date must be the same as or later than the start date.
+              </p>
             }
 
             @if (isDraft(group)) {
@@ -210,7 +228,7 @@ import { afterNextPaint, endNotBeforeStart, entryId, moveIndex } from './editor-
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, AppButton, AppInput],
+  imports: [ReactiveFormsModule, AppButton, AppInput, MonthYearPickerComponent],
 })
 export class EditorEducationFormComponent {
   readonly education = input<EducationEntry[]>([]);
@@ -311,8 +329,8 @@ export class EditorEducationFormComponent {
         institution: new FormControl(data?.institution ?? '', [Validators.required]),
         degree: new FormControl(data?.degree ?? ''),
         field: new FormControl(data?.field ?? ''),
-        startDate: new FormControl(data?.startDate ?? ''),
-        endDate: new FormControl(data?.endDate ?? ''),
+        startDate: new FormControl(data?.startDate ?? '', [monthNotInFuture]),
+        endDate: new FormControl(data?.endDate ?? '', [monthNotInFuture]),
         gpa: new FormControl(data?.gpa ?? '', [Validators.maxLength(15)]),
       },
       { validators: [endNotBeforeStart] },
@@ -325,10 +343,17 @@ export class EditorEducationFormComponent {
     entries.forEach((entry) => this.entries.push(this.createEntry(entry), { emitEvent: false }));
   }
 
+  dateError(group: FormGroup, control: string, kind: 'start' | 'end'): string | null {
+    return monthError(group.controls[control], kind);
+  }
+
   private emit(): void {
-    const result = this.toEntries(this.entries.value)
-      .filter((e) => !this.draftIds.has(e.id))
-      .filter((e) => e.institution.trim());
+    const committed = this.entries.controls.filter(
+      (group) => !this.draftIds.has(String(group.controls['id'].value)),
+    );
+    if (committed.some((group) => group.invalid)) return;
+    const validValues = committed.map((group) => group.getRawValue());
+    const result = this.toEntries(validValues).filter((e) => e.institution.trim());
     this.lastEmittedJson = JSON.stringify(result);
     this.educationChange.emit(result);
   }

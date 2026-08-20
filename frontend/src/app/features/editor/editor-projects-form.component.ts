@@ -11,8 +11,16 @@ import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } fr
 import { ProjectEntry } from '../../core/models/resume.model';
 import { AppButton } from '../../shared/components/app-button.component';
 import { AppInput } from '../../shared/components/app-input.component';
+import { MonthYearPickerComponent } from '../../shared/components/month-year-picker.component';
 import { httpUrlValidator } from '../../core/validators/resume.validators';
-import { afterNextPaint, endNotBeforeStart, entryId, moveIndex } from './editor-entry.utils';
+import {
+  afterNextPaint,
+  endNotBeforeStart,
+  entryId,
+  monthError,
+  monthNotInFuture,
+  moveIndex,
+} from './editor-entry.utils';
 
 @Component({
   selector: 'app-editor-projects-form',
@@ -87,15 +95,25 @@ import { afterNextPaint, endNotBeforeStart, entryId, moveIndex } from './editor-
             </div>
 
             <div class="grid grid--dates">
-              <app-input label="Start date" type="month" formControlName="startDate" />
-              <app-input label="End date" type="month" formControlName="endDate" />
+              <app-month-year-picker
+                label="Start date"
+                [error]="dateError(group, 'startDate', 'start')"
+                formControlName="startDate"
+              />
+              <app-month-year-picker
+                label="End date"
+                [error]="dateError(group, 'endDate', 'end')"
+                formControlName="endDate"
+              />
             </div>
             @if (
               group.hasError('endBeforeStart') &&
               group.controls['startDate'].touched &&
               group.controls['endDate'].touched
             ) {
-              <p class="field-error" role="alert">End date cannot be before start date.</p>
+              <p class="field-error" role="alert">
+                End date must be the same as or later than the start date.
+              </p>
             }
 
             <app-input label="Technologies" formControlName="technologies" />
@@ -296,7 +314,7 @@ import { afterNextPaint, endNotBeforeStart, entryId, moveIndex } from './editor-
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, AppButton, AppInput],
+  imports: [ReactiveFormsModule, AppButton, AppInput, MonthYearPickerComponent],
 })
 export class EditorProjectsFormComponent {
   readonly projects = input<ProjectEntry[]>([]);
@@ -423,8 +441,8 @@ export class EditorProjectsFormComponent {
         name: new FormControl(data?.name ?? '', [Validators.required]),
         role: new FormControl(data?.role ?? ''),
         link: new FormControl(data?.link ?? '', [httpUrlValidator]),
-        startDate: new FormControl(data?.startDate ?? ''),
-        endDate: new FormControl(data?.endDate ?? ''),
+        startDate: new FormControl(data?.startDate ?? '', [monthNotInFuture]),
+        endDate: new FormControl(data?.endDate ?? '', [monthNotInFuture]),
         technologies: new FormControl(data?.technologies ?? ''),
         description: new FormControl(data?.description ?? ''),
         bullets: new FormArray(
@@ -443,9 +461,17 @@ export class EditorProjectsFormComponent {
     entries.forEach((entry) => this.entries.push(this.createEntry(entry), { emitEvent: false }));
   }
 
+  dateError(group: FormGroup, control: string, kind: 'start' | 'end'): string | null {
+    return monthError(group.controls[control], kind);
+  }
+
   private emit(): void {
-    const result = this.toEntries(this.entries.value)
-      .filter((e) => !this.draftIds.has(e.id))
+    const committed = this.entries.controls.filter(
+      (group) => !this.draftIds.has(String(group.controls['id'].value)),
+    );
+    if (committed.some((group) => group.invalid)) return;
+    const validValues = committed.map((group) => group.getRawValue());
+    const result = this.toEntries(validValues)
       .filter((e) => e.name.trim())
       .map((e) => ({ ...e, bullets: e.bullets.filter((b) => b.trim().length > 0) }));
     this.lastEmittedJson = JSON.stringify(result);

@@ -1,6 +1,12 @@
 import { Observable, from, of } from 'rxjs';
 import { AuthRepository } from '../auth.repository';
-import { AuthSession, LoginRequest, RegisterRequest, UserProfile } from '../../models/auth.model';
+import {
+  AuthSession,
+  LoginRequest,
+  RegisterRequest,
+  RegistrationResult,
+  UserProfile,
+} from '../../models/auth.model';
 import { HttpApiClient } from './api-client';
 import { HttpAuthSession } from './http-auth-session';
 
@@ -15,8 +21,18 @@ export class HttpAuthRepository implements AuthRepository {
     private readonly session: HttpAuthSession,
   ) {}
 
-  register(request: RegisterRequest): Observable<AuthSession> {
-    return from(this.obtainSession('/auth/register', request));
+  register(request: RegisterRequest): Observable<RegistrationResult> {
+    return from(
+      this.client
+        .request<RegistrationResult | AuthSession>('POST', '/auth/register', request)
+        .then((result) => {
+          if ('accessToken' in result) {
+            this.session.setSession(result);
+            return { requiresVerification: false, email: result.user.email };
+          }
+          return result;
+        }),
+    );
   }
 
   login(request: LoginRequest): Observable<AuthSession> {
@@ -40,14 +56,19 @@ export class HttpAuthRepository implements AuthRepository {
     );
   }
 
-  requestPasswordReset(_email: string): Observable<void> {
-    // Password reset is deferred to a later milestone; mirror the mock's
-    // success shape so the UI flow completes.
-    return of(undefined);
+  requestPasswordReset(email: string): Observable<void> {
+    return from(this.client.request<void>('POST', '/auth/forgot-password', { email }));
   }
 
-  resetPassword(_token: string, _newPassword: string): Observable<void> {
-    return of(undefined);
+  resetPassword(token: string, newPassword: string): Observable<void> {
+    return from(this.client.request<void>('POST', '/auth/reset-password', { token, newPassword }));
+  }
+
+  verifyEmail(token: string): Observable<void> {
+    return from(this.client.request<void>('POST', '/auth/verify-email', { token }));
+  }
+  resendVerification(email: string): Observable<void> {
+    return from(this.client.request<void>('POST', '/auth/resend-verification', { email }));
   }
 
   getProfile(): Observable<UserProfile | null> {

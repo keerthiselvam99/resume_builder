@@ -23,7 +23,10 @@ export function errorHandler(err: unknown, req: Request, res: Response, _next: N
     return;
   }
   if (err instanceof AppError) {
-    const body: { error: string; details?: string[] } = { error: err.message };
+    const body: { error: string; code: string; details?: string[] } = {
+      error: err.message,
+      code: err.code,
+    };
     if (err.name === 'ValidationError' && 'details' in err && Array.isArray(err.details)) {
       body.details = err.details as string[];
     }

@@ -1,11 +1,16 @@
 import { randomUUID } from 'node:crypto';
 import { config } from '../../config/config';
-import { UnauthorizedError, ValidationError } from '../../http/errors';
+import {
+  EmailVerificationRequiredError,
+  UnauthorizedError,
+  ValidationError,
+} from '../../http/errors';
 import { getRepositories } from '../../repositories';
 import { User } from '../../types/domain';
 import { hashPassword, verifyPassword } from '../security/password';
 import { generateRefreshToken, hashRefreshToken, signAccessToken } from '../security/tokens';
 import { validateEmail, validateName, validatePassword } from '../security/validate';
+import { AccountRecoveryService } from './account-recovery.service';
 
 /** Public session payload returned to the client. */
 export interface SessionResult {
@@ -30,7 +35,8 @@ export class AuthService {
     name: string;
     email: string;
     password: string;
-  }): Promise<SessionWithSecret> {
+    requireVerification?: boolean;
+  }): Promise<{ requiresVerification: true; email: string } | SessionWithSecret> {
     const issues = [
       validateName(input.name),
       validateEmail(input.email),
@@ -42,22 +48,31 @@ export class AuthService {
 
     const { users, audit } = getRepositories();
     const passwordHash = await hashPassword(input.password);
+    const bootstrap =
+      process.env.ADMIN_BOOTSTRAP_EMAIL?.trim().toLowerCase() === input.email.trim().toLowerCase();
+    // Older unit fixtures explicitly exercise authenticated subsystems rather
+    // than registration. Keep those test-only accounts migrated/verified;
+    // Recovery tests opt in to the real lifecycle with DEV_EMAIL_CAPTURE.
+    const migratedTestFixture =
+      process.env.NODE_ENV === 'test' &&
+      (process.env.DEV_EMAIL_CAPTURE !== 'true' ||
+        (process.env.E2E_LEGACY_AUTO_VERIFY === 'true' && !input.requireVerification));
     const created = await users.create({
       id: randomUUID(),
       name: input.name,
       email: input.email,
       passwordHash,
-      role:
-        process.env.ADMIN_BOOTSTRAP_EMAIL?.trim().toLowerCase() === input.email.trim().toLowerCase()
-          ? 'admin'
-          : 'user',
+      role: bootstrap ? 'admin' : 'user',
+      emailVerifiedAt: bootstrap || migratedTestFixture ? new Date().toISOString() : null,
     });
     await audit.record({
       actorUserId: created.id,
       action: 'auth.register',
       details: `Registered ${created.email}`,
     });
-    return this.createSession(created);
+    if (bootstrap || migratedTestFixture) return this.createSession(created);
+    await new AccountRecoveryService().sendVerification(created.id, created.email);
+    return { requiresVerification: true, email: created.email };
   }
 
   async login(
@@ -80,6 +95,7 @@ export class AuthService {
       });
       throw new UnauthorizedError('Invalid email or password.');
     }
+    if (record.emailVerifiedAt === null) throw new EmailVerificationRequiredError();
     await audit.record({
       actorUserId: record.id,
       action: 'auth.login',

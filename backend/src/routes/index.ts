@@ -1,7 +1,19 @@
 import { Router } from 'express';
 import { getHealth } from '../controllers/health.controller';
 import { exportPdf } from '../controllers/pdf.controller';
-import { login, logout, me, refresh, register } from '../controllers/auth.controller';
+import {
+  capturedEmails,
+  capturedEmailAction,
+  forgotPassword,
+  login,
+  logout,
+  me,
+  refresh,
+  register,
+  resendVerification,
+  resetPassword,
+  verifyEmail,
+} from '../controllers/auth.controller';
 import { runAtsAnalysis } from '../controllers/ats.controller';
 import { runJobMatch } from '../controllers/job-matcher.controller';
 import {
@@ -36,6 +48,9 @@ import {
   refreshLimiter,
   registerLimiter,
   adminMutationLimiter,
+  recoveryIdentifierLimiter,
+  recoveryIpLimiter,
+  recoveryTokenLimiter,
 } from '../middleware/rate-limit';
 
 const router = Router();
@@ -48,6 +63,17 @@ router.post('/auth/login', loginLimiter, login);
 router.post('/auth/refresh', refreshLimiter, refresh);
 router.post('/auth/logout', logout);
 router.get('/auth/me', requireAuth, me);
+router.post('/auth/verify-email', recoveryTokenLimiter, verifyEmail);
+router.post(
+  '/auth/resend-verification',
+  recoveryIpLimiter,
+  recoveryIdentifierLimiter,
+  resendVerification
+);
+router.post('/auth/forgot-password', recoveryIpLimiter, recoveryIdentifierLimiter, forgotPassword);
+router.post('/auth/reset-password', recoveryTokenLimiter, resetPassword);
+router.get('/dev/mailbox', capturedEmails);
+router.post('/dev/mailbox/:id/action', capturedEmailAction);
 
 // Resumes (all owned by the authenticated user)
 router.get('/resumes', requireAuth, listResumes);

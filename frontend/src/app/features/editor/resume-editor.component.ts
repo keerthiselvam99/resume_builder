@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { isContentEmpty } from '../../core/models/resume-content-empty';
+import { normalizeResumeContent } from '../../core/templates/resume-template-renderer';
 import { ApiError } from '../../core/repositories/http/api-client';
 import {
   RESUME_REPOSITORY,
@@ -94,7 +95,9 @@ import { AtsAnalysisPanelComponent } from './ats-analysis-panel.component';
               <span class="editor__pdf-label editor__pdf-label--error" role="alert">{{
                 pdfMessage()
               }}</span>
-              <app-button variant="secondary" (click)="downloadPdf()">Retry</app-button>
+              @if (pdfRetryable()) {
+                <app-button variant="secondary" (click)="downloadPdf()">Retry</app-button>
+              }
             }
           </div>
         </header>
@@ -359,6 +362,7 @@ export class ResumeEditorComponent implements OnDestroy {
 
   readonly pdfState = signal<'idle' | 'generating' | 'success' | 'error'>('idle');
   readonly pdfMessage = signal('');
+  readonly pdfRetryable = signal(false);
   private pdfSuccessTimer: ReturnType<typeof setTimeout> | null = null;
 
   readonly savingResume = signal(false);
@@ -492,35 +496,48 @@ export class ResumeEditorComponent implements OnDestroy {
     }
     const version = this.store.version();
     const templateId = this.templateId();
-    if (!version || !this.content() || !templateId) {
+    const content = this.content();
+    const exportContent = content ? normalizeResumeContent(content) : null;
+    if (!version || !exportContent || !templateId || isContentEmpty(exportContent)) {
       this.pdfState.set('error');
+      this.pdfRetryable.set(false);
       this.pdfMessage.set('Add resume content before downloading your PDF.');
       return;
     }
 
-    this.store.flush();
-    await this.store.waitForIdle();
-
-    const filename = buildPdfFilename(this.session.user()?.name, version.name);
-
     this.clearPdfSuccessTimer();
     this.pdfState.set('generating');
     this.pdfMessage.set('');
+    this.pdfRetryable.set(false);
+    this.store.flush();
+    await this.store.waitForIdle();
+    if (this.store.saveState() === 'failed') {
+      this.pdfState.set('error');
+      this.pdfRetryable.set(true);
+      this.pdfMessage.set('Save failed. Retry saving before downloading your PDF.');
+      return;
+    }
+
+    const filename = buildPdfFilename(this.session.user()?.name, version.name);
     try {
       const result = await this.pdfRepo.exportPdf(version.id, {
         templateDefinitionId: templateId,
-        content: this.content()!,
+        content: exportContent,
         filename,
       });
-      this.downloadBlob(result.blob, result.filename);
+      await this.downloadBlob(result.blob, result.filename);
       this.pdfState.set('success');
       this.pdfMessage.set(`Downloaded ${result.filename}`);
       this.pdfSuccessTimer = setTimeout(() => {
         this.pdfState.set('idle');
         this.pdfMessage.set('');
       }, 4000);
+      await this.router.navigate(['/job-matcher'], {
+        queryParams: { resumeId: version.resumeId, versionId: version.id },
+      });
     } catch (err) {
       this.pdfState.set('error');
+      this.pdfRetryable.set(false);
       if (err instanceof ApiError) {
         switch (err.status) {
           case 400:
@@ -537,9 +554,16 @@ export class ResumeEditorComponent implements OnDestroy {
             this.pdfMessage.set('This version cannot be exported. It may be published.');
             break;
           case 503:
+            this.pdfRetryable.set(true);
             this.pdfMessage.set('PDF service temporarily unavailable. Please try again later.');
             break;
+          case 429:
+          case 500:
+            this.pdfRetryable.set(true);
+            this.pdfMessage.set('Could not generate the PDF. Please try again.');
+            break;
           default:
+            this.pdfRetryable.set(true);
             this.pdfMessage.set('Could not generate the PDF. Please try again.');
         }
       } else if (err instanceof Error) {
@@ -550,9 +574,13 @@ export class ResumeEditorComponent implements OnDestroy {
     }
   }
 
-  private downloadBlob(blob: Blob, filename: string): void {
+  private async downloadBlob(blob: Blob, filename: string): Promise<void> {
+    const signature = new TextDecoder().decode(await blob.slice(0, 5).arrayBuffer());
+    if (blob.type !== 'application/pdf' || signature !== '%PDF-') {
+      throw new Error('The server response was not a valid PDF.');
+    }
     if (typeof URL === 'undefined' || typeof URL.createObjectURL !== 'function') {
-      return;
+      throw new Error('PDF download could not be started in this browser.');
     }
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement('a');
@@ -560,8 +588,14 @@ export class ResumeEditorComponent implements OnDestroy {
     anchor.download = filename;
     anchor.style.display = 'none';
     document.body.appendChild(anchor);
-    anchor.click();
-    anchor.remove();
+    try {
+      anchor.click();
+    } catch (error) {
+      URL.revokeObjectURL(url);
+      throw error;
+    } finally {
+      anchor.remove();
+    }
     setTimeout(() => URL.revokeObjectURL(url), 4000);
   }
 

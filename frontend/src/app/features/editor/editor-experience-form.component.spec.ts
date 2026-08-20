@@ -165,6 +165,9 @@ describe('EditorExperienceFormComponent', () => {
     const draft = component.entries.at(1);
     draft.controls['company'].setValue('Draft Corp');
     draft.controls['role'].setValue('Intern');
+    draft.controls['endDate'].setValue('2024-01');
+    draft.controls['current'].setValue(true);
+    draft.controls['current'].setValue(true);
     fixture.detectChanges();
     const last = emitted[emitted.length - 1];
     expect(last.every((e) => e.id !== draft.controls['id'].value)).toBe(true);
@@ -178,6 +181,7 @@ describe('EditorExperienceFormComponent', () => {
     const draft = component.entries.at(1);
     draft.controls['company'].setValue('Draft Corp');
     draft.controls['role'].setValue('Intern');
+    draft.controls['endDate'].setValue('2024-01');
     component.addBullet(draft);
     const bullets = component.bulletsOf(draft);
     bullets.at(0).setValue('Automated testing.');

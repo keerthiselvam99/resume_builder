@@ -31,6 +31,12 @@ export class UnauthorizedError extends AppError {
   }
 }
 
+export class EmailVerificationRequiredError extends AppError {
+  constructor() {
+    super(403, 'EMAIL_VERIFICATION_REQUIRED', 'Verify your email before signing in.');
+  }
+}
+
 export class ForbiddenError extends AppError {
   constructor(message = 'Forbidden.') {
     super(403, 'forbidden', message);

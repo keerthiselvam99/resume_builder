@@ -9,6 +9,7 @@ export interface AccessTokenPayload {
   email: string;
   role: UserRole;
   type: 'access';
+  ver: number;
   iat: number;
   exp: number;
 }
@@ -31,12 +32,19 @@ export function signAccessToken(user: {
   id: string;
   email: string;
   role: UserRole;
+  authVersion?: number;
 }): SignedAccessToken {
   const ttl = config.auth.accessTokenTtlSeconds;
   const now = Date.now();
   const expiresAt = new Date(now + ttl * 1000);
   const token = jwt.sign(
-    { sub: user.id, email: user.email, role: user.role, type: 'access' },
+    {
+      sub: user.id,
+      email: user.email,
+      role: user.role,
+      type: 'access',
+      ver: user.authVersion ?? 0,
+    },
     config.auth.jwtSecret,
     { expiresIn: ttl }
   );

@@ -97,6 +97,9 @@ export const config = {
      */
     cookieSecure: process.env.AUTH_COOKIE_SECURE === 'true' || isProduction,
     passwordMaxLength: 128,
+    verificationTtlHours: parseInt(process.env.AUTH_VERIFICATION_TTL_HOURS ?? '24', 10),
+    resetTtlMinutes: parseInt(process.env.AUTH_RESET_TTL_MINUTES ?? '30', 10),
+    appOrigin: process.env.APP_ORIGIN ?? 'http://127.0.0.1:4201',
     rateLimit: {
       loginMax: parseInt(process.env.AUTH_RATE_LIMIT_LOGIN_MAX ?? '100', 10),
       registerMax: parseInt(process.env.AUTH_RATE_LIMIT_REGISTER_MAX ?? '20', 10),

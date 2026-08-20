@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { AppShell } from './shell/app-shell.component';
 import { authGuard, guestGuard, adminGuard } from './core/guards/auth.guard';
 import { canDeactivateEditor } from './features/editor/editor.guard';
+import { environment } from './core/environment';
 
 export const routes: Routes = [
   {
@@ -90,11 +91,35 @@ export const routes: Routes = [
     title: 'Forgot password',
   },
   {
+    path: 'check-email',
+    loadComponent: () =>
+      import('./features/auth/check-email.component').then((m) => m.CheckEmailComponent),
+    title: 'Check your email',
+  },
+  {
+    path: 'verify-email',
+    loadComponent: () =>
+      import('./features/auth/verify-email.component').then((m) => m.VerifyEmailComponent),
+    title: 'Verify email',
+  },
+  {
     path: 'reset-password',
     canActivate: [guestGuard],
     loadComponent: () =>
       import('./features/auth/reset-password.component').then((m) => m.ResetPasswordComponent),
     title: 'Reset password',
   },
+  ...(environment.production
+    ? []
+    : [
+        {
+          path: 'dev/mailbox',
+          loadComponent: () =>
+            import('./features/dev-mailbox/dev-mailbox.component').then(
+              (m) => m.DevMailboxComponent,
+            ),
+          title: 'Development email mailbox',
+        },
+      ]),
   { path: '**', redirectTo: 'resumes' },
 ];

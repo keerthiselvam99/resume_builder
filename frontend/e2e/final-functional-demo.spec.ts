@@ -39,8 +39,10 @@ async function addAllSections(page: Page): Promise<void> {
   let card = await draft(section, 'Add experience');
   await card.getByLabel('Company').fill('Gate Labs');
   await card.getByLabel('Role').fill('Release Engineer');
-  await card.getByLabel('Start date').fill('2021-01');
-  await card.getByLabel('End date').fill('2024-12');
+  await card.getByRole('combobox', { name: 'Start date month' }).selectOption('01');
+  await card.getByRole('combobox', { name: 'Start date year' }).selectOption('2021');
+  await card.getByRole('combobox', { name: 'End date month' }).selectOption('12');
+  await card.getByRole('combobox', { name: 'End date year' }).selectOption('2024');
   await card.getByRole('button', { name: 'Add highlight' }).click();
   await card
     .getByPlaceholder('Write a highlight…')
@@ -66,8 +68,10 @@ async function addAllSections(page: Page): Promise<void> {
   card = await draft(section, 'Add education');
   await card.getByLabel('Institution').fill('Quality University');
   await card.getByLabel('Degree').fill('BSc Software Quality');
-  await card.getByLabel('Start date').fill('2020-01');
-  await card.getByLabel('End date').fill('2024-05');
+  await card.getByRole('combobox', { name: 'Start date month' }).selectOption('01');
+  await card.getByRole('combobox', { name: 'Start date year' }).selectOption('2020');
+  await card.getByRole('combobox', { name: 'End date month' }).selectOption('05');
+  await card.getByRole('combobox', { name: 'End date year' }).selectOption('2024');
   await card.getByRole('button', { name: 'Save' }).click();
 
   section = page.locator('#editor-section-certifications');

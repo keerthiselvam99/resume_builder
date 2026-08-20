@@ -49,7 +49,7 @@ function run(nodeArgs, cwd, env, label) {
 const backend = run(
   [join(backendDir, 'node_modules', 'tsx', 'dist', 'cli.mjs'), 'src/server.ts'],
   backendDir,
-  safeEnv({ PDF_WARMUP: 'true', DATA_STORE: 'memory' }),
+  safeEnv({ PDF_WARMUP: 'true', DATA_STORE: 'memory', DEV_EMAIL_CAPTURE: 'true' }),
   'backend',
 );
 

@@ -125,7 +125,10 @@ export class RegisterComponent {
     this.errorMessage.set(null);
     const { name, email, password } = this.form.value;
     this.session.register(name ?? '', email ?? '', password ?? '').subscribe({
-      next: () => this.router.navigateByUrl('/resumes'),
+      next: (result) =>
+        result.requiresVerification
+          ? this.router.navigate(['/check-email'], { state: { email: result.email } })
+          : this.router.navigateByUrl('/resumes'),
       error: (err: Error) => {
         this.submitting.set(false);
         this.errorMessage.set(err.message || 'Registration failed.');

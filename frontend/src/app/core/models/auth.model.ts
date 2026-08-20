@@ -6,6 +6,7 @@ export interface User {
   email: string;
   role: UserRole;
   createdAt: string;
+  emailVerifiedAt?: string | null;
 }
 
 export interface AuthSession {
@@ -24,6 +25,11 @@ export interface RegisterRequest {
   name: string;
   email: string;
   password: string;
+}
+
+export interface RegistrationResult {
+  requiresVerification: boolean;
+  email: string;
 }
 
 export interface UserProfile {

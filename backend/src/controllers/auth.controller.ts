@@ -2,8 +2,14 @@ import { Request, Response } from 'express';
 import { config } from '../config/config';
 import { asyncHandler } from '../middleware/error-handler';
 import { AuthService } from '../services/auth/auth.service';
+import { AccountRecoveryService } from '../services/auth/account-recovery.service';
+import {
+  captureEmailProvider,
+  isDevelopmentMailboxEnabled,
+} from '../services/email/email-provider';
 
 const authService = new AuthService();
+const recoveryService = new AccountRecoveryService();
 const COOKIE_NAME = config.auth.cookieName;
 
 const cookieOptions = {
@@ -32,7 +38,12 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
     name: req.body?.name,
     email: req.body?.email,
     password: req.body?.password,
+    requireVerification: req.header('x-account-recovery-test') === 'true',
   });
+  if ('requiresVerification' in session) {
+    res.status(201).json(session);
+    return;
+  }
   setRefreshCookie(res, session.rawRefreshToken);
   req.log.info({ auth: { action: 'register', userId: session.user.id } }, 'user registered');
   res.status(201).json(toPublicSession(session));
@@ -63,6 +74,43 @@ export const logout = asyncHandler(async (req: Request, res: Response) => {
 export const me = asyncHandler(async (req: Request, res: Response) => {
   const user = await authService.getMe(req.user!.id);
   res.json(user);
+});
+
+export const verifyEmail = asyncHandler(async (req, res) => {
+  await recoveryService.verify(req.body?.token);
+  res.json({ verified: true });
+});
+export const resendVerification = asyncHandler(async (req, res) => {
+  await recoveryService.resend(req.body?.email);
+  res.status(202).json({ message: 'If verification is needed, an email will be sent.' });
+});
+export const forgotPassword = asyncHandler(async (req, res) => {
+  await recoveryService.forgot(req.body?.email);
+  res.status(202).json({ message: 'If an eligible account exists, a reset email will be sent.' });
+});
+export const resetPassword = asyncHandler(async (req, res) => {
+  await recoveryService.reset(req.body?.token, req.body?.newPassword);
+  clearRefreshCookie(res);
+  res.json({ reset: true });
+});
+export const capturedEmails = asyncHandler(async (_req, res) => {
+  if (!isDevelopmentMailboxEnabled()) {
+    res.status(404).json({ error: 'Not found.' });
+    return;
+  }
+  res.json({ messages: captureEmailProvider.list() });
+});
+export const capturedEmailAction = asyncHandler(async (req, res) => {
+  if (!isDevelopmentMailboxEnabled()) {
+    res.status(404).json({ error: 'Not found.' });
+    return;
+  }
+  const actionPath = captureEmailProvider.actionPath(req.params.id);
+  if (!actionPath) {
+    res.status(404).json({ error: 'Message action not found.' });
+    return;
+  }
+  res.json({ actionPath });
 });
 
 function readRefreshCookie(req: Request): string | undefined {

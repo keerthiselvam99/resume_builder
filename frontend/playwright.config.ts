@@ -38,6 +38,9 @@ export default defineConfig({
         AUTH_RATE_LIMIT_LOGIN_MAX: '10000',
         AUTH_RATE_LIMIT_REFRESH_MAX: '10000',
         ADMIN_BOOTSTRAP_EMAIL: 'admin.e2e@example.com',
+        NODE_ENV: 'test',
+        DEV_EMAIL_CAPTURE: 'true',
+        E2E_LEGACY_AUTO_VERIFY: 'true',
         // Warm the PDF Chromium worker at boot so the first real export never
         // pays the cold browser-launch cost inside the response budget. The
         // pdf-export spec polls /pdfz before exporting as the readiness gate.
@@ -68,7 +71,7 @@ export default defineConfig({
       // baselines below named after this project.
       name: 'chromium',
       testIgnore:
-        /(editor-http-persistence|ats-analysis-http|pdf-export|dummy-resume-acceptance|job-matcher-acceptance|admin-acceptance)\.spec\.ts$/,
+        /(editor-http-persistence|ats-analysis-http|pdf-export|dummy-resume-acceptance|job-matcher-acceptance|admin-acceptance|account-recovery-acceptance)\.spec\.ts$/,
       use: {
         ...devices['Desktop Chrome'],
         baseURL: MOCK_BASE,
@@ -83,7 +86,7 @@ export default defineConfig({
       workers: 1,
       name: 'http-persistence',
       testMatch:
-        /(editor-http-persistence|ats-analysis-http|pdf-export|dummy-resume-acceptance|job-matcher-acceptance|admin-acceptance)\.spec\.ts$/,
+        /(editor-http-persistence|ats-analysis-http|pdf-export|dummy-resume-acceptance|job-matcher-acceptance|admin-acceptance|account-recovery-acceptance)\.spec\.ts$/,
       use: {
         ...devices['Desktop Chrome'],
         baseURL: HTTP_BASE,

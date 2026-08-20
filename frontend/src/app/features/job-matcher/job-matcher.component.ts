@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { JobMatchRequest, JobMatchResult } from '../../core/models/job-match.model';
 import { Resume, ResumeVersion } from '../../core/models/resume.model';
 import { ApiError } from '../../core/repositories/http/api-client';
@@ -466,6 +466,7 @@ export class JobMatcherComponent {
   private readonly resumesRepo = inject(RESUME_REPOSITORY);
   private readonly matcherRepo = inject(JOB_MATCH_REPOSITORY);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute, { optional: true });
   readonly resumes = signal<Resume[]>([]);
   readonly versions = signal<ResumeVersion[]>([]);
   readonly loadingResumes = signal(true);
@@ -501,7 +502,9 @@ export class JobMatcherComponent {
     this.resumesRepo.list().subscribe({
       next: (items) => {
         this.resumes.set(items);
+        const requestedResumeId = this.route?.snapshot.queryParamMap.get('resumeId');
         const preferred =
+          items.find((r) => r.id === requestedResumeId) ??
           items.find((r) => r.primary && r.status === 'saved') ??
           items.find((r) => r.status === 'saved') ??
           items[0];
@@ -528,7 +531,12 @@ export class JobMatcherComponent {
         const stored = restore ? this.readStored() : null;
         const restoredVersion =
           stored?.resumeId === resumeId ? items.find((v) => v.id === stored.versionId) : undefined;
-        const target = restoredVersion ?? items.find((v) => v.isMaster) ?? items[0];
+        const requestedVersionId = this.route?.snapshot.queryParamMap.get('versionId');
+        const target =
+          items.find((v) => v.id === requestedVersionId) ??
+          restoredVersion ??
+          items.find((v) => v.isMaster) ??
+          items[0];
         this.form.controls.versionId.setValue(target?.id ?? '');
         if (
           stored &&

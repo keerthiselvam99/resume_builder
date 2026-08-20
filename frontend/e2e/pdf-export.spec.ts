@@ -72,6 +72,10 @@ async function addExportSections(page: import('@playwright/test').Page): Promise
     await section.getByRole('button', { name: addName }).click();
     const card = section.locator('[data-draft="true"]');
     for (const [label, value] of fields) await card.getByLabel(label).fill(value);
+    if (id === 'experience') {
+      await card.getByRole('combobox', { name: 'End date month' }).selectOption('01');
+      await card.getByRole('combobox', { name: 'End date year' }).selectOption('2024');
+    }
     await card.getByRole('button', { name: 'Save' }).click();
   }
   await expect(page.locator('.editor__save-label')).toHaveText('Draft saved', { timeout: 10_000 });
@@ -155,10 +159,11 @@ test('http pdf export: downloads a genuine, A4 named PDF through the real servic
   // The frontend builds <user><version>.pdf; the backend sanitizes again.
   expect(download.suggestedFilename()).toBe(EXPECTED_FILENAME);
 
-  // Status chip reports the download completed (template renders "Downloaded").
-  // Asserted right after the download event, before the slow pdf.js parsing
-  // below, because the chip auto-resets to idle after a few seconds.
-  await expect(page.locator('.editor__pdf-label')).toHaveText('Downloaded');
+  // Navigation happens only after the browser download event has fired, and
+  // carries the exact exported resume/version selection into Job Matcher.
+  await expect(page).toHaveURL(/\/job-matcher\?resumeId=[^&]+&versionId=[^&]+/);
+  await expect(page.locator('select[formControlName="resumeId"]')).not.toHaveValue('');
+  await expect(page.locator('select[formControlName="versionId"]')).toHaveValue(versionId);
   await mkdir(EVIDENCE, { recursive: true });
   await page.screenshot({ path: join(EVIDENCE, 'full-stack-downloaded.png'), fullPage: true });
 
