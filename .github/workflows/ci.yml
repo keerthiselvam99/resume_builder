@@ -1,6 +1,5 @@
 name: CI
 
-
 on:
   pull_request:
     branches:
@@ -20,25 +19,30 @@ jobs:
     defaults:
       run:
         working-directory: frontend
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: npm
           cache-dependency-path: frontend/package-lock.json
+
       - name: Install dependencies
         run: npm ci
-      - name: Install Chromium for PDF tests
-        run: npx playwright install --with-deps chromium
+
       - name: Check formatting
         run: npm run format:check
+
       - name: Lint
         run: npm run lint
+
       - name: Build production bundle
         run: npm run build
+
       - name: Run unit tests
         run: npm test -- --watch=false
 
@@ -48,24 +52,35 @@ jobs:
     defaults:
       run:
         working-directory: backend
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: npm
           cache-dependency-path: backend/package-lock.json
+
       - name: Install dependencies
         run: npm ci
+
+      - name: Install Chromium for PDF tests
+        run: npx playwright install --with-deps chromium
+
       - name: Check formatting
         run: npm run format:check
+
       - name: Lint
         run: npm run lint
+
       - name: Build
         run: npm run build
+
       - name: Check template catalogue drift
         run: npm run catalogue:check
+
       - name: Run tests
         run: npm test
