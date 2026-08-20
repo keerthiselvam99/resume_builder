@@ -6,6 +6,7 @@ import {
   ColorThemeId,
   TemplateCategory,
 } from '../models/template-definition.model';
+import { buildDefinitions } from './template-catalogue';
 
 const baseContent: ResumeContent = {
   contacts: {
@@ -331,6 +332,50 @@ describe('renderResumeHtml — optional sections', () => {
     const html = renderResumeHtml(baseContent, makeDef({}));
     expect(html).toContain('>Summary<');
     expect(html).toContain('>Skills<');
+  });
+});
+
+describe('renderResumeHtml — sparse content across the catalogue', () => {
+  it('removes whitespace-only entries and empty layout slots across all 100 templates', () => {
+    const sparse: ResumeContent = {
+      ...baseContent,
+      summary: 'Focused engineer.',
+      skills: [' ', 'TypeScript'],
+      experiences: [],
+      projects: [{ ...baseContent.projects[0], name: ' ', description: ' ' }],
+      education: [],
+      certifications: [{ ...baseContent.certifications[0], name: ' ', issuer: ' ' }],
+      awards: [],
+      achievements: [],
+      languages: [],
+      customSections: [{ id: 'empty', heading: ' ', items: [' '] }],
+    };
+    const definitions = buildDefinitions();
+    expect(definitions).toHaveLength(100);
+    for (const definition of definitions) {
+      const html = renderResumeHtml(sparse, definition);
+      expect(html).not.toContain('>Projects<');
+      expect(html).not.toContain('>Certifications<');
+      expect(html).not.toContain('<h2></h2>');
+      expect(html).not.toMatch(/<div class="(?:sidebar|split-accent|cards-col)"><\/div>/);
+    }
+  });
+
+  it('omits entries with future or reversed dates from every template', () => {
+    const futureYear = String(new Date().getFullYear() + 1);
+    const invalid: ResumeContent = {
+      ...baseContent,
+      experiences: [{ ...baseContent.experiences[0], startDate: `${futureYear}-01`, endDate: '' }],
+      projects: [{ ...baseContent.projects[0], startDate: '2024-06', endDate: '2024-05' }],
+      education: [],
+      certifications: [],
+      awards: [],
+    };
+    for (const definition of buildDefinitions()) {
+      const html = renderResumeHtml(invalid, definition);
+      expect(html).not.toContain('>Experience<');
+      expect(html).not.toContain('>Projects<');
+    }
   });
 });
 

@@ -29,7 +29,7 @@ export function renderResumeHtml(
 ): string {
   const css = buildCss(definition);
   const fitCss = buildFitCss(options.fitTo);
-  const body = buildBody(content, definition);
+  const body = buildBody(normalizeResumeContent(content), definition);
   const shell = LAYOUT_META[definition.layoutFamily].shell;
   return `<!DOCTYPE html><html><head><meta charset="utf-8"><style>${css}${fitCss}</style></head><body><div class="resume-page" data-shell="${shell}">${body}</div>${PAGINATION_SCRIPT}</body></html>`;
 }
@@ -529,7 +529,7 @@ function renderSingle(content: ResumeContent, meta: LayoutMeta): string {
   for (const key of meta.order) {
     parts.push(renderSectionByKey(key, content, meta));
   }
-  return parts.join('\n');
+  return parts.filter((part) => part.trim()).join('\n');
 }
 
 function renderSidebar(content: ResumeContent, meta: LayoutMeta): string {
@@ -546,11 +546,12 @@ function renderSidebar(content: ResumeContent, meta: LayoutMeta): string {
   for (const key of meta.order) {
     mainParts.push(renderSectionByKey(key, content, meta));
   }
-  const mainHtml = mainParts.join('\n');
+  const mainHtml = mainParts.filter((part) => part.trim()).join('\n');
 
   if (!sidebarHtml) {
     return mainHtml;
   }
+  if (!mainHtml) return sidebarHtml;
   return `<div class="layout-sidebar"><div class="sidebar">${sidebarHtml}</div><div class="main-content">${mainHtml}</div></div>`;
 }
 
@@ -576,6 +577,7 @@ function renderSplit(content: ResumeContent, meta: LayoutMeta): string {
   if (!accentHtml) {
     return mainHtml;
   }
+  if (!mainHtml) return headerOutside && headerHtml ? `${headerHtml}\n${accentHtml}` : accentHtml;
 
   const accentFirstClass = meta.accentFirst ? ' layout-modern-split--accent-first' : '';
   const grid = `<div class="layout-modern-split${accentFirstClass}"><div class="split-main">${mainHtml}</div><div class="split-accent">${accentHtml}</div></div>`;
@@ -599,6 +601,9 @@ function renderCards(content: ResumeContent, meta: LayoutMeta): string {
 
   if (!leftHtml && !rightHtml) {
     return headerHtml;
+  }
+  if (!leftHtml) {
+    return `${headerHtml}\n<div class="cards-grid cards-grid--single"><div class="cards-col">${rightHtml}</div></div>`;
   }
   if (!rightHtml) {
     return `${headerHtml}\n<div class="cards-grid cards-grid--single"><div class="cards-col">${leftHtml}</div></div>`;
@@ -677,6 +682,7 @@ function renderBannerHeaderWhite(content: ResumeContent): string {
       `<div class="contact-row" style="justify-content: center; color: white; border-top: 0.5px solid rgba(255,255,255,0.3); padding-top: 4pt;">${contactHtml}</div>`,
     );
   }
+  if (parts.length === 1) return '';
   parts.push('</div>');
   return parts.join('\n');
 }
@@ -689,7 +695,11 @@ function renderLetterheadHeader(content: ResumeContent): string {
   if (content.contacts.title) {
     mainParts.push(`<p class="header-title">${escapeHtml(content.contacts.title)}</p>`);
   }
-  return `<div class="header-letterhead"><div class="hl-main">${mainParts.join('\n')}</div><div class="hl-side">${renderContactRow(content)}</div></div>`;
+  const contact = renderContactRow(content);
+  if (!mainParts.length && !contact) return '';
+  if (!mainParts.length) return `<div class="contact-row">${contact}</div>`;
+  if (!contact) return `<div class="header">${mainParts.join('\n')}</div>`;
+  return `<div class="header-letterhead"><div class="hl-main">${mainParts.join('\n')}</div><div class="hl-side">${contact}</div></div>`;
 }
 
 function renderHeader(content: ResumeContent): string {
@@ -704,7 +714,7 @@ function renderHeader(content: ResumeContent): string {
   if (contactHtml.trim()) {
     parts.push(`<div class="contact-row">${contactHtml}</div>`);
   }
-  return `<div class="header">${parts.join('\n')}</div>`;
+  return parts.length ? `<div class="header">${parts.join('\n')}</div>` : '';
 }
 
 function renderContactRow(content: ResumeContent, color?: 'white'): string {
@@ -902,6 +912,84 @@ function renderCustomSections(customSections: ResumeContent['customSections']): 
         `<div class="section"><h2>${escapeHtml(section.heading)}</h2><ul>${section.items.map((i) => `<li>${escapeHtml(i)}</li>`).join('')}</ul></div>`,
     )
     .join('\n');
+}
+
+export function normalizeResumeContent(content: ResumeContent): ResumeContent {
+  const trim = (value: string | undefined) => (value ?? '').trim();
+  const now = new Date();
+  const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  const validMonth = (value: string | undefined) => {
+    const normalized = trim(value);
+    const legacyYear = /^(19[5-9]\d|20\d{2})$/.test(normalized);
+    return (
+      !normalized ||
+      (legacyYear && normalized <= String(now.getFullYear())) ||
+      (/^\d{4}-(0[1-9]|1[0-2])$/.test(normalized) &&
+        normalized >= '1950-01' &&
+        normalized <= currentMonth)
+    );
+  };
+  const validRange = (start: string | undefined, end: string | undefined, current = false) =>
+    validMonth(start) &&
+    (current || validMonth(end)) &&
+    (current || !start || !end || end >= start);
+  return {
+    ...content,
+    contacts: Object.fromEntries(
+      Object.entries(content.contacts).map(([key, value]) => [key, trim(value)]),
+    ) as unknown as ResumeContent['contacts'],
+    summary: trim(content.summary),
+    skills: content.skills.map(trim).filter(Boolean),
+    experiences: content.experiences
+      .filter(
+        (entry) =>
+          trim(entry.company) &&
+          trim(entry.role) &&
+          validRange(entry.startDate, entry.endDate, entry.current),
+      )
+      .map((entry) => ({
+        ...entry,
+        company: trim(entry.company),
+        role: trim(entry.role),
+        location: trim(entry.location),
+        bullets: entry.bullets.map(trim).filter(Boolean),
+      })),
+    projects: content.projects
+      .filter((entry) => trim(entry.name) && validRange(entry.startDate, entry.endDate))
+      .map((entry) => ({
+        ...entry,
+        name: trim(entry.name),
+        role: trim(entry.role),
+        description: trim(entry.description),
+        technologies: trim(entry.technologies),
+        bullets: entry.bullets.map(trim).filter(Boolean),
+      })),
+    education: content.education.filter(
+      (entry) =>
+        trim(entry.institution) && trim(entry.degree) && validRange(entry.startDate, entry.endDate),
+    ),
+    certifications: content.certifications.filter(
+      (entry) =>
+        trim(entry.name) &&
+        trim(entry.issuer) &&
+        validMonth(entry.issueDate) &&
+        (entry.doesNotExpire || validMonth(entry.expiryDate)) &&
+        (entry.doesNotExpire ||
+          !entry.issueDate ||
+          !entry.expiryDate ||
+          entry.expiryDate >= entry.issueDate),
+    ),
+    awards: content.awards.filter((entry) => trim(entry.title) && validMonth(entry.date)),
+    achievements: content.achievements.filter((entry) => trim(entry.text)),
+    languages: content.languages.filter((entry) => trim(entry.name)),
+    customSections: content.customSections
+      .map((section) => ({
+        ...section,
+        heading: trim(section.heading),
+        items: section.items.map(trim).filter(Boolean),
+      }))
+      .filter((section) => section.heading && section.items.length),
+  };
 }
 
 function renderContactSidebar(contacts: ResumeContent['contacts']): string {
