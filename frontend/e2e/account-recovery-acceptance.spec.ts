@@ -3,6 +3,7 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 const API = 'http://127.0.0.1:3000/api/v1',
   OUT = join(process.cwd(), 'account-recovery-acceptance'),
+  captureEvidence = process.env['CAPTURE_ACCEPTANCE_EVIDENCE'] === '1',
   oldPassword = 'Password123!',
   newPassword = 'NewPassword123!';
 async function messages(request: APIRequestContext, email: string) {
@@ -37,7 +38,8 @@ for (const run of [1, 2, 3])
     await expect(page).toHaveURL(/check-email/);
     await expect(page.getByRole('heading', { name: 'Check your email' })).toBeVisible();
     await expect(page.getByText(/r\*\*\*@example\.com/)).toBeVisible();
-    if (run === 1) await page.screenshot({ path: join(OUT, 'check-email.png'), fullPage: true });
+    if (captureEvidence && run === 1)
+      await page.screenshot({ path: join(OUT, 'check-email.png'), fullPage: true });
     expect(
       (
         await request.post(`${API}/auth/login`, { data: { email, password: oldPassword } })
@@ -47,7 +49,7 @@ for (const run of [1, 2, 3])
     const first = await token(request, captured.at(-1));
     await page.getByRole('button', { name: 'Resend verification email' }).click();
     await expect(page.getByText(/Resend available/)).toBeVisible();
-    if (run === 1) {
+    if (captureEvidence && run === 1) {
       await page.screenshot({ path: join(OUT, 'resend-cooldown.png'), fullPage: true });
       await page.setViewportSize({ width: 390, height: 844 });
       await page.screenshot({ path: join(OUT, 'mobile-check-email.png'), fullPage: true });
@@ -60,7 +62,7 @@ for (const run of [1, 2, 3])
     expect(
       (await request.post(`${API}/auth/verify-email`, { data: { token: first } })).status(),
     ).toBe(401);
-    if (run === 1) {
+    if (captureEvidence && run === 1) {
       await page.route('**/api/v1/auth/verify-email', async (route) => {
         await new Promise((resolve) => setTimeout(resolve, 500));
         await route.continue();
@@ -79,19 +81,19 @@ for (const run of [1, 2, 3])
       .last()
       .getByRole('button', { name: 'Open verification link' })
       .click();
-    if (run === 1) {
+    if (captureEvidence && run === 1) {
       await expect(page.getByText(/Verifying/)).toBeVisible();
       await page.screenshot({ path: join(OUT, 'verification-loading.png'), fullPage: true });
     }
     await verificationNavigation;
     await expect(page.getByText('Your email is verified.')).toBeVisible();
     await expect.poll(() => page.url()).not.toContain('token=');
-    if (run === 1)
+    if (captureEvidence && run === 1)
       await page.screenshot({ path: join(OUT, 'verification-success.png'), fullPage: true });
     expect(
       (await request.post(`${API}/auth/verify-email`, { data: { token: newest } })).status(),
     ).toBe(401);
-    if (run === 1) {
+    if (captureEvidence && run === 1) {
       await page.unroute('**/api/v1/auth/verify-email');
       await page.goto(`/verify-email?token=${encodeURIComponent(newest)}`);
       await expect(page.getByText(/invalid or has expired/)).toBeVisible();
@@ -110,7 +112,7 @@ for (const run of [1, 2, 3])
         })
       ).status(),
     ).toBe(200);
-    if (run === 1) {
+    if (captureEvidence && run === 1) {
       await page.goto('/forgot-password');
       await page.screenshot({ path: join(OUT, 'forgot-password-form.png'), fullPage: true });
       await page.locator('input#forgot-email').fill(email);
@@ -141,7 +143,7 @@ for (const run of [1, 2, 3])
       .getByRole('button', { name: 'Open reset link' })
       .click();
     await expect.poll(() => page.url()).not.toContain('token=');
-    if (run === 1) {
+    if (captureEvidence && run === 1) {
       await page.screenshot({ path: join(OUT, 'reset-form.png'), fullPage: true });
       await page.setViewportSize({ width: 390, height: 844 });
       await page.screenshot({ path: join(OUT, 'mobile-reset-form.png'), fullPage: true });
@@ -151,7 +153,8 @@ for (const run of [1, 2, 3])
     await page.locator('input#reset-confirm').fill(newPassword);
     await page.getByRole('button', { name: 'Reset password' }).click();
     await expect(page.getByText('Password reset. You can now log in.')).toBeVisible();
-    if (run === 1) await page.screenshot({ path: join(OUT, 'reset-success.png'), fullPage: true });
+    if (captureEvidence && run === 1)
+      await page.screenshot({ path: join(OUT, 'reset-success.png'), fullPage: true });
     expect(
       (
         await request.post(`${API}/auth/reset-password`, {
