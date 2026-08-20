@@ -36,7 +36,12 @@ for (const run of [1, 2, 3]) {
     if (run === 1) await page.screenshot({ path: join(OUT, 'admin-summary.png'), fullPage: true });
     const search = page.getByLabel('Search');
     await search.fill(`casey-${suffix}`);
-    await expect(page.getByText(`casey-${suffix}@example.com`)).toBeVisible();
+    const email = `casey-${suffix}@example.com`;
+    const userRow = page
+      .getByRole('row')
+      .filter({ has: page.getByRole('cell', { name: email, exact: true }) });
+    await expect(userRow).toHaveCount(1);
+    await expect(userRow.getByRole('cell', { name: email, exact: true })).toBeVisible();
     if (run === 1)
       await page.screenshot({ path: join(OUT, 'search-filter-results.png'), fullPage: true });
     await page.getByRole('button', { name: 'Promote to Admin' }).click();
