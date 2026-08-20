@@ -163,6 +163,8 @@ The Angular app (`http://localhost:4200`) renders the same status via the health
 
 ## Documentation
 
+- [docs/production-email.md](docs/production-email.md) — Resend transactional-email setup and operational guidance
+
 - [docs/requirements.md](docs/requirements.md) — authoritative product specification (FRs, DB design, PL/SQL packages, API endpoints, acceptance criteria)
 - [database/README.md](database/README.md) — canonical Oracle provisioning + verification workflow
 - `docs/database-design.md` — Oracle schema, recorded test Oracle version (pending)

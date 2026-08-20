@@ -10,6 +10,7 @@ import { Db } from './db/connection';
 import { pdfExportService } from './services/pdf/pdf-export.service';
 import { errorHandler } from './middleware/error-handler';
 import { getLivez, getPdfz, getReadyz } from './controllers/health.controller';
+import { resolveEmailConfiguration } from './services/email/email-config';
 
 const app = express();
 
@@ -71,10 +72,14 @@ app.use((_req, res) => {
 app.use(errorHandler);
 
 async function start(): Promise<void> {
+  const email = resolveEmailConfiguration();
   const port = config.port;
   const server = app.listen(port, () => {
     console.log(`ResumeIQ API listening on http://localhost:${port}`);
     console.log(`Data store: ${config.dataStore}`);
+    console.log(
+      `Email provider: ${email.provider} (configured: ${email.configured ? 'yes' : 'no'})`
+    );
   });
 
   /**

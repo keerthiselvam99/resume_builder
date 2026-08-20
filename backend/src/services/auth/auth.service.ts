@@ -55,8 +55,8 @@ export class AuthService {
     // Recovery tests opt in to the real lifecycle with DEV_EMAIL_CAPTURE.
     const migratedTestFixture =
       process.env.NODE_ENV === 'test' &&
-      (process.env.DEV_EMAIL_CAPTURE !== 'true' ||
-        (process.env.E2E_LEGACY_AUTO_VERIFY === 'true' && !input.requireVerification));
+      !input.requireVerification &&
+      (process.env.EMAIL_PROVIDER !== 'capture' || process.env.E2E_LEGACY_AUTO_VERIFY === 'true');
     const created = await users.create({
       id: randomUUID(),
       name: input.name,
@@ -71,7 +71,7 @@ export class AuthService {
       details: `Registered ${created.email}`,
     });
     if (bootstrap || migratedTestFixture) return this.createSession(created);
-    await new AccountRecoveryService().sendVerification(created.id, created.email);
+    await new AccountRecoveryService().sendVerification(created.id, created.email, true);
     return { requiresVerification: true, email: created.email };
   }
 

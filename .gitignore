@@ -21,3 +21,4 @@ blob-report/
 # Local runtime output
 *.log
 *.pid
+frontend/account-recovery-acceptance/*.json

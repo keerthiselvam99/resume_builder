@@ -1,14 +1,26 @@
 import { config } from '../../config/config';
-import { UnauthorizedError, ValidationError } from '../../http/errors';
+import {
+  EmailDeliveryUnavailableError,
+  UnauthorizedError,
+  ValidationError,
+} from '../../http/errors';
 import { getRepositories } from '../../repositories';
-import { getEmailProvider } from '../email/email-provider';
+import { resolveEmailConfiguration } from '../email/email-config';
+import {
+  EmailDeliveryError,
+  EmailMessage,
+  EmailProvider,
+  getEmailProvider,
+} from '../email/email-provider';
 import { generateActionToken, hashActionToken } from '../security/action-tokens';
 import { hashPassword, verifyPassword } from '../security/password';
 import { validateEmail, validatePassword } from '../security/validate';
 
 const invalid = () => new UnauthorizedError('This link is invalid or has expired.');
 export class AccountRecoveryService {
-  async sendVerification(userId: string, email: string) {
+  constructor(private readonly emailProvider?: EmailProvider) {}
+
+  async sendVerification(userId: string, email: string, surfaceDeliveryFailure = false) {
     const { raw, hash: tokenHash, id } = generateActionToken();
     const now = new Date();
     const expiresAt = new Date(
@@ -22,13 +34,15 @@ export class AccountRecoveryService {
       createdAt: now.toISOString(),
       expiresAt,
     });
-    await getEmailProvider().send({
+    const delivered = await this.deliver(userId, {
       to: email,
       kind: 'verify-email',
       subject: 'Verify your ResumeIQ email',
-      actionUrl: `${config.auth.appOrigin}/verify-email?token=${encodeURIComponent(raw)}`,
+      actionUrl: `${resolveEmailConfiguration().publicAppUrl}/verify-email?token=${encodeURIComponent(raw)}`,
       expiresAt,
+      idempotencyKey: `verify-${id}`,
     });
+    if (!delivered && surfaceDeliveryFailure) throw new EmailDeliveryUnavailableError();
     await getRepositories().audit.record({
       actorUserId: userId,
       action: 'auth.verification-requested',
@@ -80,12 +94,13 @@ export class AccountRecoveryService {
       createdAt: now.toISOString(),
       expiresAt,
     });
-    await getEmailProvider().send({
+    await this.deliver(user.id, {
       to: user.email,
       kind: 'reset-password',
       subject: 'Reset your ResumeIQ password',
-      actionUrl: `${config.auth.appOrigin}/reset-password?token=${encodeURIComponent(raw)}`,
+      actionUrl: `${resolveEmailConfiguration().publicAppUrl}/reset-password?token=${encodeURIComponent(raw)}`,
       expiresAt,
+      idempotencyKey: `reset-${id}`,
     });
     await getRepositories().audit.record({
       actorUserId: user.id,
@@ -122,10 +137,50 @@ export class AccountRecoveryService {
       action: 'auth.password-reset-completed',
       details: 'Password reset completed; sessions revoked.',
     });
-    await getEmailProvider().send({
+    await this.deliver(user.id, {
       to: user.email,
       kind: 'password-changed',
       subject: 'Your ResumeIQ password was changed',
+      occurredAt: new Date().toISOString(),
+      idempotencyKey: `password-changed-${token.id}`,
     });
+  }
+
+  private async deliver(userId: string, message: EmailMessage): Promise<boolean> {
+    const repos = getRepositories();
+    try {
+      const result = await (this.emailProvider ?? getEmailProvider()).send(message);
+      await repos.audit.record({
+        actorUserId: userId,
+        action: 'auth.email-delivery',
+        details: JSON.stringify({
+          eventType: message.kind,
+          recipientDomain: message.to.split('@')[1]?.toLowerCase() ?? 'invalid',
+          provider: result.provider,
+          providerMessageId: result.messageId.replace(/[^A-Za-z0-9_-]/g, '').slice(0, 128),
+          status: 'sent',
+          failureCategory: null,
+        }),
+      });
+      return true;
+    } catch (error) {
+      const failure =
+        error instanceof EmailDeliveryError
+          ? error
+          : new EmailDeliveryError('temporary_provider_failure', true);
+      await repos.audit.record({
+        actorUserId: userId,
+        action: 'auth.email-delivery',
+        details: JSON.stringify({
+          eventType: message.kind,
+          recipientDomain: message.to.split('@')[1]?.toLowerCase() ?? 'invalid',
+          provider: resolveEmailConfiguration().provider,
+          providerMessageId: null,
+          status: 'failed',
+          failureCategory: failure.category,
+        }),
+      });
+      return false;
+    }
   }
 }
